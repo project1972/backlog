@@ -527,12 +527,15 @@
             }
         }
 
+        
         function checkAndRunAutomations() {
             if (!currentUser) return;
             const now = new Date();
             const currentMonthYear = `${(now.getMonth() + 1 < 10 ? '0' : '') + (now.getMonth() + 1)}/${now.getFullYear()}`;
             const dayOfWeek = now.getDay(); 
             let stateChanged = false;
+
+            // 1. Migração Semanal (Sábado, Domingo e Segunda)
             if ([0, 1, 6].includes(dayOfWeek)) { 
                 let movedCount = 0;
                 for (let i = todoList.length - 1; i >= 0; i--) {
@@ -541,37 +544,53 @@
                         monthlyDoneList.push({
                             task: completedTask.task || completedTask.text,
                             archiveMonth: currentMonthYear,
-                            archivedAt: now.toLocaleDateString('pt-BR')
+                            archivedAt: now.toLocaleDateString('pt-BR'),
+                            archivedTimestamp: now.getTime() // Adicionado para cálculo exato de expiração
                         });
                         movedCount++;
                     }
                 }
                 if (movedCount > 0) {
-                    writeToTerminalWithoutSaving(`$ [SISTEMA] Ciclo semanal fechado. ${movedCount} tarefa(s) concluída(s) arquivada(s) no histórico mensal.`);
+                    writeToTerminalWithoutSaving(`$ [SISTEMA] Ciclo semanal fechado. ${movedCount} tarefa(s) concluída(s) arquivada(s) no histórico.`);
                     stateChanged = true;
                 }
             }
 
-            const fifthBusinessDay = getFifthBusinessDay(now.getFullYear(), now.getMonth());
-            if (now.getDate() >= fifthBusinessDay) {
-                let clearedCount = 0;
-                for (let i = monthlyDoneList.length - 1; i >= 0; i--) {
-                    if (monthlyDoneList[i].archiveMonth !== currentMonthYear) {
+            // 2. Limpeza por Idade (Remove apenas o que tiver mais de 180 dias)
+            const MS_PER_DAY = 1000 * 60 * 60 * 24;
+            let clearedCount = 0;
+
+            for (let i = monthlyDoneList.length - 1; i >= 0; i--) {
+                const item = monthlyDoneList[i];
+                
+                // Se o item antigo não tinha timestamp, inferimos a partir do archivedAt (se existir)
+                let itemTimestamp = item.archivedTimestamp;
+                if (!itemTimestamp && item.archivedAt) {
+                    const parts = item.archivedAt.split('/');
+                    if (parts.length === 3) {
+                        itemTimestamp = new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+                    }
+                }
+
+                // Se houver timestamp, calcula a diferença em dias
+                if (itemTimestamp) {
+                    const diffDays = (now.getTime() - itemTimestamp) / MS_PER_DAY;
+                    if (diffDays >= 180) {
                         monthlyDoneList.splice(i, 1);
                         clearedCount++;
                     }
                 }
-                if (clearedCount > 0) {
-                    writeToTerminalWithoutSaving(`$ [SISTEMA] 5º dia útil detectado. ${clearedCount} registro(s) do mês anterior limpo(s).`);
-                    stateChanged = true;
-                }
+            }
+
+            if (clearedCount > 0) {
+                writeToTerminalWithoutSaving(`$ [SISTEMA] Higienização: ${clearedCount} registro(s) concluído(s) com mais de 180 dias foram removido(s).`);
+                stateChanged = true;
             }
 
             if (stateChanged) {
                 saveContent();
             }
         }
-
         function getFifthBusinessDay(year, month) {
             let count = 0; let day = 1;
             while (count < 5) {

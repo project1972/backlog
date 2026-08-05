@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,22 +11,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
     <style id="theme-style">
         /* Os estilos dinâmicos do motor de skins serão injetados aqui */
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
-
     <div id="terminal-container">
-        <!-- Cabeçalho Principal do App com as Bolinhas Clássicas UNIX e badges da imagem original -->
+        <!-- Cabeçalho Principal do App com as Bolinhas Clássicas UNIX -->
         <header id="app-header" class="flex items-center justify-between px-4 py-2 bg-[#090d16] border-b border-[#1e293b] select-none shrink-0">
             <div class="flex items-center gap-2">
                 <span class="w-3.5 h-3.5 rounded-full bg-[#ef4444]"></span>
                 <span class="w-3.5 h-3.5 rounded-full bg-[#eab308]"></span>
                 <span class="w-3.5 h-3.5 rounded-full bg-[#22c55e]"></span>
                 <span id="app-title" class="text-sm font-semibold ml-2 uppercase tracking-wider flex items-center gap-2 text-[#38bdf8]">
-                    <span class="text-[#22c55e] font-mono">&gt;_</span> BACKLOGS @ UNIX V3.4
+                    <span class="text-[#22c55e] font-mono">&gt;_</span> BACKLOGS 
+                    
                 </span>
             </div>
             <div class="flex items-center gap-2.5">
@@ -39,30 +37,33 @@
                 </div>
             </div>
         </header>
-        
-        <!-- Barra 1 de Atalhos Rápidos (Exibir, Planilha, Backups) -->
-        <div id="quick-bar-exibir" class="flex items-center gap-2 px-4 py-2 border-b border-[#1e293b] bg-black/10 overflow-x-auto shrink-0 select-none no-scrollbar text-xs font-mono">
-            <span class="text-[#38bdf8] font-bold uppercase shrink-0">EXIBIR:</span>
-            <button onclick="executeQuickCommand('tarefas')" class="px-2.5 py-1.5 rounded border border-[#38bdf8]/40 hover:border-[#38bdf8] bg-transparent text-[#38bdf8] flex items-center gap-1 transition-all shrink-0">
-                📋 Tarefas (t)
+
+        <!-- Barra 1 de Atalhos Rápidos (Exibir) -->
+        <div id="quick-bar-exibir" class="flex items-center gap-1.5 px-3 py-1.5 border-b border-[#1e293b] bg-black/10 overflow-x-auto shrink-0 select-none no-scrollbar text-xs font-mono">
+            <span class="text-[#38bdf8] font-bold uppercase shrink-0 text-[11px]">EXIBIR:</span>
+            <button onclick="executeQuickCommand('tarefas')" class="px-2 py-1 rounded border border-[#38bdf8]/40 hover:border-[#38bdf8] bg-transparent text-[#38bdf8] flex items-center gap-1 transition-all shrink-0">
+                📋 Tarefas
             </button>
-            <button onclick="executeQuickCommand('notas')" class="px-2.5 py-1.5 rounded border border-amber-500/40 hover:border-amber-500 bg-transparent text-amber-500 flex items-center gap-1 transition-all shrink-0">
-                📝 Notas (n)
+            <button onclick="executeQuickCommand('notas')" class="px-2 py-1 rounded border border-amber-500/40 hover:border-amber-500 bg-transparent text-amber-500 flex items-center gap-1 transition-all shrink-0">
+                📝 Notas
             </button>
-            <button onclick="executeQuickCommand('prazos')" class="px-2.5 py-1.5 rounded border border-emerald-500/40 hover:border-emerald-500 bg-transparent text-emerald-500 flex items-center gap-1 transition-all shrink-0">
-                ⏳ Prazos (p)
+            <button onclick="executeQuickCommand('prazos')" class="px-2 py-1 rounded border border-emerald-500/40 hover:border-emerald-500 bg-transparent text-emerald-500 flex items-center gap-1 transition-all shrink-0">
+                ⏳ Prazos
             </button>
-            <span class="text-slate-500 font-bold uppercase mx-1 shrink-0">MAIS:</span>
-            <button onclick="executeQuickCommand('carregar arquivo')" class="px-2.5 py-1.5 rounded border border-green-500/40 hover:border-green-500 bg-transparent text-green-500 flex items-center gap-1 transition-all shrink-0">
+            <button onclick="executeQuickCommand('agenda')" class="px-2 py-1 rounded border border-sky-500/40 hover:border-sky-500 bg-transparent text-sky-400 flex items-center gap-1 transition-all shrink-0">
+                📅 Agenda
+            </button>
+            <span class="text-slate-500 font-bold uppercase mx-0.5 shrink-0 text-[11px]">MAIS:</span>
+            <button onclick="executeQuickCommand('carregar arquivo')" class="px-2 py-1 rounded border border-green-500/40 hover:border-green-500 bg-transparent text-green-500 flex items-center gap-1 transition-all shrink-0">
                 Planilha
             </button>
-            <button onclick="executeQuickCommand('importar')" class="px-2.5 py-1.5 rounded border border-purple-500/40 hover:border-purple-500 bg-transparent text-purple-500 flex items-center gap-1 transition-all shrink-0">
-                Importar TXT
+            <button onclick="executeQuickCommand('importar')" class="px-2 py-1 rounded border border-purple-500/40 hover:border-purple-500 bg-transparent text-purple-500 flex items-center gap-1 transition-all shrink-0">
+                Txt
             </button>
-            <button onclick="executeQuickCommand('exportar')" class="px-2.5 py-1.5 rounded border border-indigo-500/40 hover:border-indigo-500 bg-transparent text-indigo-500 flex items-center gap-1 transition-all shrink-0">
-                Exportar TXT
+            <button onclick="executeQuickCommand('exportar')" class="px-2 py-1 rounded border border-indigo-500/40 hover:border-indigo-500 bg-transparent text-indigo-500 flex items-center gap-1 transition-all shrink-0">
+                Exportar
             </button>
-            <button onclick="executeQuickCommand('ajuda')" class="px-2.5 py-1.5 rounded border border-red-500/40 hover:border-red-500 bg-transparent text-red-500 flex items-center gap-1 transition-all shrink-0">
+            <button onclick="executeQuickCommand('ajuda')" class="px-2 py-1 rounded border border-red-500/40 hover:border-red-500 bg-transparent text-red-500 flex items-center gap-1 transition-all shrink-0">
                 Ajuda
             </button>
         </div>
@@ -77,11 +78,14 @@
                 + Criar Nota
             </button>
             <button onclick="triggerQuickAdd('prazo')" class="px-2.5 py-1.5 rounded border border-sky-500/40 hover:border-sky-500 bg-transparent text-sky-400 flex items-center gap-1 transition-all shrink-0">
-                + Criar Prazo (Assistente)
+                + Criar Prazo 
+            </button>
+            <button onclick="triggerQuickAdd('agenda')" class="px-2.5 py-1.5 rounded border border-indigo-500/40 hover:border-indigo-500 bg-transparent text-indigo-400 flex items-center gap-1 transition-all shrink-0">
+                + Criar Agenda 
             </button>
         </div>
-        
-        <!-- Área de Exibição do Terminal (Com tabindex para permitir o foco e navegação via setas) -->
+
+        <!-- Área de Exibição do Terminal -->
         <main id="terminal" tabindex="-1" class="flex-grow overflow-y-auto p-4 space-y-1 select-text"></main>
 
         <!-- Secção de Notícias Integrada CNN Brasil -->
@@ -94,7 +98,7 @@
             </div>
         </section>
 
-        <!-- Container de Entrada de Comandos (Estilizado como caixa no rodapé como antes) -->
+        <!-- Container de Entrada de Comandos -->
         <footer id="input-container" class="border-t border-white/5 p-3 bg-black/20 shrink-0 flex items-center gap-2">
             <span class="text-emerald-500 font-bold font-mono select-none">$</span>
             <input type="text" id="input" autofocus placeholder="Digite ajuda para ver os comandos..." autocomplete="off" class="bg-transparent outline-none border-none flex-grow text-sm font-mono">
@@ -130,15 +134,15 @@
         // Arrays de memória compartilhada
         const scheduledEvents = [];
         const todoList = [];
-        const monthlyDoneList = []; 
+        const monthlyDoneList = [];
         const notesList = [];
-        let deadlinesList = []; // Declaração mutável com let para permitir higienizações completas
+        let deadlinesList = [];
         const lastCommands = [];
-        
+
         let commandIndex = 0;
         let awaitingDateInput = false;
         let pomodoroInterval = null;
-        let lastActiveView = ""; // Rastreador ativo de tela para redesenho reativo em tempo real
+        let lastActiveView = "";
 
         const terminal = document.getElementById("terminal");
         const input = document.getElementById("input");
@@ -147,26 +151,25 @@
         const userDisplay = document.getElementById("user-display");
 
         const skins = {
-            // Skin 1: UNIX retro limpa (Sem botões, sem bordas esquerdas, fundo flat para lines do terminal)
             1: { bg: "#090d16", container: "#090d16", text: "#38bdf8", primary: "#38bdf8", inputBg: "#0d1527", border: "#1e293b", lineBg: "transparent", marker: "transparent", hideUI: false, hideButtons: true },
             2: { bg: "#1e1e1e", container: "#252526", text: "#d4d4d4", primary: "#4fc1ff", inputBg: "#333333", border: "#444444", lineBg: "#2d2d2d", marker: "#008b8b", hideUI: false, hideButtons: false },
             3: { bg: "black", container: "#0a0a0a", text: "#00FF00", primary: "#00FF00", inputBg: "#111", border: "#00FF00", lineBg: "#050505", marker: "#00FF00", hideUI: false, hideButtons: false },
             4: { bg: "#121212", container: "#121212", text: "#ffffff", primary: "#ffffff", inputBg: "#121212", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
-            5: { bg: "#ffffff", container: "#ffffff", text: "#000000", primary: "#000000", inputBg: "#ffffff", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }, 
-            6: { bg: "#0000aa", container: "#0000aa", text: "#ffffff", primary: "#ffffff", inputBg: "#0000aa", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }, 
+            5: { bg: "#ffffff", container: "#ffffff", text: "#000000", primary: "#000000", inputBg: "#ffffff", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
+            6: { bg: "#0000aa", container: "#0000aa", text: "#ffffff", primary: "#ffffff", inputBg: "#0000aa", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
             7: { bg: "#1a1a1a", container: "#1a1a1a", text: "#f5f5f7", primary: "#6e6e73", inputBg: "#242426", border: "#333336", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
-            8: { bg: "#000000", container: "#000000", text: "#39FF14", primary: "#39FF14", inputBg: "#000000", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }, 
-            9: { bg: "#4040E0", container: "#3A3ACC", text: "#A0A0FF", primary: "#A0A0FF", inputBg: "#3A3ACC", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }, 
-            10: { bg: "#204060", container: "#204060", text: "#ffffff", primary: "#ff8000", inputBg: "#1a334d", border: "#ff8000", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }, 
-            11: { bg: "#000000", container: "#000000", text: "#b5b5b5", primary: "#b5b5b5", inputBg: "#000000", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }, 
-            12: { bg: "#050505", container: "#050505", text: "#ffb000", primary: "#ffb000", inputBg: "#050505", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true } 
+            8: { bg: "#000000", container: "#000000", text: "#39FF14", primary: "#39FF14", inputBg: "#000000", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
+            9: { bg: "#4040E0", container: "#3A3ACC", text: "#A0A0FF", primary: "#A0A0FF", inputBg: "#3A3ACC", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
+            10: { bg: "#204060", container: "#204060", text: "#ffffff", primary: "#ff8000", inputBg: "#1a334d", border: "#ff8000", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
+            11: { bg: "#000000", container: "#000000", text: "#b5b5b5", primary: "#b5b5b5", inputBg: "#000000", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true },
+            12: { bg: "#050505", container: "#050505", text: "#ffb000", primary: "#ffb000", inputBg: "#050505", border: "transparent", lineBg: "transparent", marker: "transparent", hideUI: true, hideButtons: true }
         };
 
         function applySkin(id) {
             const s = skins[id] || skins[1];
             const isUnix = s.hideUI;
             const hideButtons = s.hideButtons || false;
-            
+
             styleTag.innerHTML = `
                 * { box-sizing: border-box; }
                 body { 
@@ -204,23 +207,11 @@
                     line-height: 1.5;
                     font-family: 'Fira Code', 'Courier New', monospace;
                 }
-                #terminal:focus {
-                    outline: none;
-                }
-                #news-section {
-                    display: ${isUnix ? 'none' : 'block'};
-                }
-                #news-toggle { 
-                    color: ${s.primary}; 
-                    border-left: 3px solid ${s.primary}; 
-                }
-                #noticias { 
-                    background-color: ${s.lineBg || 'rgba(0,0,0,0.05)'};
-                    color: ${s.text};
-                }
-                #noticias a {
-                    color: ${s.primary};
-                }
+                #terminal:focus { outline: none; }
+                #news-section { display: ${isUnix ? 'none' : 'block'}; }
+                #news-toggle { color: ${s.primary}; border-left: 3px solid ${s.primary}; }
+                #noticias { background-color: ${s.lineBg || 'rgba(0,0,0,0.05)'}; color: ${s.text}; }
+                #noticias a { color: ${s.primary}; }
                 #input-container { 
                     background-color: ${s.container};
                     border-top: ${isUnix ? 'none' : `1px solid ${s.border}`};
@@ -243,7 +234,7 @@
                     background-color: transparent;
                     color: ${s.text}; 
                     font-weight: bold; 
-                    caret-color: ${s.primary}; 
+                    caret-color: ${s.primary};
                     font-size: 15px;
                 }
                 .line-item { 
@@ -257,15 +248,8 @@
                     background-color: ${(isUnix || hideButtons) ? 'transparent' : s.lineBg}; 
                     border-radius: ${(isUnix || hideButtons) ? '0' : '4px'};
                 }
-                .line-text { 
-                    flex-grow: 1; 
-                    margin-right: 10px; 
-                    word-break: break-word;
-                }
-                .btn-group { 
-                    display: ${(isUnix || hideButtons) ? 'none' : 'flex'}; 
-                    gap: 3px;
-                }
+                .line-text { flex-grow: 1; margin-right: 10px; word-break: break-word; }
+                .btn-group { display: ${(isUnix || hideButtons) ? 'none' : 'flex'}; gap: 3px; }
                 .action-btn { 
                     background-color: ${s.inputBg}; 
                     color: ${s.primary}; 
@@ -289,19 +273,14 @@
                     border: 1px solid ${isUnix ? s.text : '#ccc'}; 
                     width: 100%;
                 }
-                th, td { 
-                    border: 1px solid ${isUnix ? s.text : '#ccc'}; 
-                    padding: 6px; 
-                    text-align: center; 
-                    font-size: 12px;
-                }
+                th, td { border: 1px solid ${isUnix ? s.text : '#ccc'}; padding: 6px; text-align: center; font-size: 12px; }
             `;
             localStorage.setItem("selectedSkin", id);
-            
+
             const newsSection = document.getElementById("news-section");
             const quickBarExibir = document.getElementById("quick-bar-exibir");
             const quickBarAdicionar = document.getElementById("quick-bar-adicionar");
-            
+
             if (newsSection) newsSection.style.display = isUnix ? "none" : "block";
             if (quickBarExibir) quickBarExibir.style.display = isUnix ? "none" : "flex";
             if (quickBarAdicionar) quickBarAdicionar.style.display = isUnix ? "none" : "flex";
@@ -324,23 +303,16 @@
             } catch (e) { console.error("Erro ao cachear:", e); }
         }
 
-        // FUNÇÃO DE DEDUPLICAÇÃO DE EXTREMA PRECISÃO (In-Place)
-        // Remove duplicatas comparando estritamente o número do Empenho (evento) e Fornecedor (agente),
-        // ignorando completamente diferenças de fuso horário / milissegundos do prazo em tempo.
         function deduplicateDeadlines() {
             const before = deadlinesList.length;
-            
             const unique = deadlinesList.filter((item, index, self) => 
                 self.findIndex(d => 
                     d.evento.trim().toLowerCase() === item.evento.trim().toLowerCase() && 
                     d.agente.trim().toLowerCase() === item.agente.trim().toLowerCase()
                 ) === index
             );
-            
-            // Mutação de Array in-place para que o Firebase salve e rastreie com integridade perfeita
             deadlinesList.length = 0;
             deadlinesList.push(...unique);
-            
             return before - deadlinesList.length;
         }
         window.deduplicateDeadlines = deduplicateDeadlines;
@@ -355,10 +327,8 @@
                     deadlinesList.length = 0; if (data.deadlinesList) deadlinesList.push(...data.deadlinesList);
                     scheduledEvents.length = 0; if (data.scheduledEvents) scheduledEvents.push(...data.scheduledEvents);
                     monthlyDoneList.length = 0; if (data.monthlyDoneList) monthlyDoneList.push(...data.monthlyDoneList);
-                    
-                    // Executa a varredura preventiva de duplicados locais
+
                     deduplicateDeadlines();
-                    
                     applySkin(data.currentSkin || 1);
                     writeToTerminalWithoutSaving("[SISTEMA] Cache local carregado com sucesso.", "#10b981");
                 } else {
@@ -378,7 +348,7 @@
                 </div>`;
             const lineText = div.querySelector('.line-text');
             if(color) lineText.style.color = color;
-            
+
             div.querySelector('.copy-btn').addEventListener('click', () => {
                 const tempInput = document.createElement("input");
                 tempInput.value = lineText.innerText.replace(/^\$\s*/, '');
@@ -389,7 +359,7 @@
             });
 
             div.querySelector('.delete-btn').addEventListener('click', () => { div.remove(); saveContent(); });
-            
+
             div.querySelector('.edit-btn').addEventListener('click', () => {
                 const v = prompt("Editar:", lineText.innerText);
                 if (v) { lineText.innerText = v; saveContent(); }
@@ -416,12 +386,12 @@
                 currentUser = user;
                 userDisplay.textContent = user.email || user.uid;
                 updateSyncStatus("synced", "Sincronizado");
-                
+
                 const docRef = doc(db, "users_data", user.uid);
                 onSnapshot(docRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data();
-                        
+
                         todoList.length = 0;
                         if (data.todoList) todoList.push(...data.todoList);
                         else if (data.tasksList) todoList.push(...data.tasksList);
@@ -429,11 +399,9 @@
                         notesList.length = 0;
                         if (data.notesList) notesList.push(...data.notesList);
 
-                        // Carregamento reativo mantendo a referência correta do Array
                         deadlinesList.length = 0;
                         if (data.deadlinesList) deadlinesList.push(...data.deadlinesList);
 
-                        // Varredura de integridade em tempo real ao ler dados externos
                         deduplicateDeadlines();
 
                         scheduledEvents.length = 0;
@@ -457,6 +425,10 @@
                             terminal.innerHTML = "";
                             writeToTerminalWithoutSaving("$ prazos");
                             renderDeadlinesList();
+                        } else if (lastActiveView === "agenda") {
+                            terminal.innerHTML = "";
+                            writeToTerminalWithoutSaving("$ agenda");
+                            renderAgendaList();
                         }
                     }
                     writeToTerminalWithoutSaving("[SISTEMA] Base de dados em nuvem carregada e ativa.", "#10b981");
@@ -486,7 +458,7 @@
             updateSyncStatus("saving", "Salvando...");
             try {
                 const docRef = doc(db, "users_data", currentUser.uid);
-                
+
                 const lines = [];
                 terminal.querySelectorAll('.line-text').forEach(el => {
                     if(!el.innerHTML.includes("[SISTEMA]") && !el.innerHTML.includes("Sincronizando")) {
@@ -527,7 +499,6 @@
             }
         }
 
-        
         function checkAndRunAutomations() {
             if (!currentUser) return;
             const now = new Date();
@@ -535,7 +506,6 @@
             const dayOfWeek = now.getDay(); 
             let stateChanged = false;
 
-            // 1. Migração Semanal (Sábado, Domingo e Segunda)
             if ([0, 1, 6].includes(dayOfWeek)) { 
                 let movedCount = 0;
                 for (let i = todoList.length - 1; i >= 0; i--) {
@@ -545,7 +515,7 @@
                             task: completedTask.task || completedTask.text,
                             archiveMonth: currentMonthYear,
                             archivedAt: now.toLocaleDateString('pt-BR'),
-                            archivedTimestamp: now.getTime() // Adicionado para cálculo exato de expiração
+                            archivedTimestamp: now.getTime()
                         });
                         movedCount++;
                     }
@@ -556,14 +526,12 @@
                 }
             }
 
-            // 2. Limpeza por Idade (Remove apenas o que tiver mais de 180 dias)
             const MS_PER_DAY = 1000 * 60 * 60 * 24;
             let clearedCount = 0;
 
             for (let i = monthlyDoneList.length - 1; i >= 0; i--) {
                 const item = monthlyDoneList[i];
-                
-                // Se o item antigo não tinha timestamp, inferimos a partir do archivedAt (se existir)
+
                 let itemTimestamp = item.archivedTimestamp;
                 if (!itemTimestamp && item.archivedAt) {
                     const parts = item.archivedAt.split('/');
@@ -572,7 +540,6 @@
                     }
                 }
 
-                // Se houver timestamp, calcula a diferença em dias
                 if (itemTimestamp) {
                     const diffDays = (now.getTime() - itemTimestamp) / MS_PER_DAY;
                     if (diffDays >= 180) {
@@ -590,15 +557,6 @@
             if (stateChanged) {
                 saveContent();
             }
-        }
-        function getFifthBusinessDay(year, month) {
-            let count = 0; let day = 1;
-            while (count < 5) {
-                const d = new Date(year, month, day).getDay();
-                if (d !== 0 && d !== 6) count++;
-                if (count < 5) day++;
-            }
-            return day;
         }
 
         const FERIADOS = [
@@ -708,7 +666,6 @@
                                     if (targetDeadline) {
                                         const eventName = `Empenho ${rawEmpenho}`;
 
-                                        // HIGIENIZAÇÃO: Evita duplicados em lote na importação do Excel pelo nome do evento (Empenho) e Fornecedor
                                         const isDuplicate = deadlinesList.some(d => 
                                             d.evento.trim().toLowerCase() === eventName.trim().toLowerCase() &&
                                             d.agente.trim().toLowerCase() === rawFornecedor.trim().toLowerCase()
@@ -732,7 +689,8 @@
                         if (totalImported > 0) saveContent();
                     } catch (err) {
                         writeToTerminal(`[ERRO] Falha ao ler arquivo: ${err.message}`, "#ef4444");
-                    }                };
+                    }
+                };
                 reader.readAsArrayBuffer(file);
             };
             inputEl.click();
@@ -755,6 +713,7 @@
                         let importedTasks = 0;
                         let importedNotes = 0;
                         let importedDeadlines = 0;
+                        let importedAgenda = 0;
 
                         lines.forEach(line => {
                             const trimmed = line.trim();
@@ -763,6 +722,7 @@
                             if (trimmed.includes("=== TAREFAS ===")) { currentMode = "tasks"; return; }
                             if (trimmed.includes("=== NOTAS ===")) { currentMode = "notes"; return; }
                             if (trimmed.includes("=== PRAZOS ===")) { currentMode = "deadlines"; return; }
+                            if (trimmed.includes("=== AGENDA ===")) { currentMode = "agenda"; return; }
 
                             if (currentMode === "tasks") {
                                 let done = false;
@@ -788,7 +748,6 @@
                                 if (parts.length >= 3) {
                                     const expirationTime = parseInt(parts[0], 10);
                                     if (!isNaN(expirationTime)) {
-                                        // HIGIENIZAÇÃO: Valida duplicados pelo nome do evento e fornecedor
                                         const exists = deadlinesList.some(d => 
                                             d.evento.trim().toLowerCase() === parts[1].trim().toLowerCase() &&
                                             d.agente.trim().toLowerCase() === parts[2].trim().toLowerCase()
@@ -805,10 +764,26 @@
                                         }
                                     }
                                 }
+                            } else if (currentMode === "agenda") {
+                                const parts = trimmed.split(";").map(p => p.trim());
+                                if (parts.length >= 2) {
+                                    const dataStr = parts[0];
+                                    const descricao = parts[1];
+                                    const dateParts = dataStr.split("/");
+                                    if (dateParts.length === 3) {
+                                        const timestamp = new Date(parseInt(dateParts[2], 10), parseInt(dateParts[1], 10) - 1, parseInt(dateParts[0], 10)).getTime();
+                                        if (!isNaN(timestamp)) {
+                                            if (!scheduledEvents.some(e => e.data === dataStr && e.descricao.toLowerCase() === descricao.toLowerCase())) {
+                                                scheduledEvents.push({ data: dataStr, timestamp, descricao, createdAt: parts[2] || new Date().toLocaleDateString('pt-BR') });
+                                                importedAgenda++;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         });
 
-                        writeToTerminal(`[SISTEMA] Importado: ${importedTasks} tarefas, ${importedNotes} notes, ${importedDeadlines} prazos.`, "#10b981");
+                        writeToTerminal(`[SISTEMA] Importado: ${importedTasks} tarefas, ${importedNotes} notas, ${importedDeadlines} prazos, ${importedAgenda} agenda(s).`, "#10b981");
                         saveContent();
                     } catch (err) {
                         writeToTerminal(`[ERRO] Erro na conversão: ${err.message}`, "#ef4444");
@@ -833,6 +808,10 @@
             deadlinesList.forEach(d => {
                 data += `${d.expirationTime} ; ${d.evento} ; ${d.agente} ; ${d.resumo || ''} ; ${d.createdAt}\n`;
             });
+            data += "\n=== AGENDA ===\n";
+            scheduledEvents.forEach(e => {
+                data += `${e.data} ; ${e.descricao} ; ${e.createdAt}\n`;
+            });
 
             const blob = new Blob([data], { type: "text/plain" });
             const a = document.createElement("a");
@@ -848,7 +827,6 @@
 
             let lower = raw.toLowerCase();
 
-            // 1. Definição do atalho rápido 'ld' para expandir para o comando de varredura completo
             if (lower === "ld" || lower === "limpar duplicados") {
                 terminal.innerHTML = "";
                 writeToTerminalWithoutSaving(`$ limpar duplicados`);
@@ -858,7 +836,6 @@
                 return;
             }
 
-            // RESOLUÇÃO DE TECLAS DE ATALHO DE UMA ÚNICA LETRA (PRODUTIVIDADE)
             if (lower === "t") raw = "tarefas";
             else if (lower === "p") raw = "prazos";
             else if (lower === "n") raw = "notas";
@@ -872,13 +849,11 @@
             const args = raw.split(" ");
             const primaryCmd = args[0].toLowerCase();
 
-            // AJUDA MANUAL
             if (lower === "ajuda" || lower === "help") {
                 displayHelpManual();
                 return;
             }
 
-            // LOGIN POR PROVEDOR GOOGLE
             if (lower === "google") {
                 writeToTerminalWithoutSaving("$ [SISTEMA] Solicitando login via Google...");
                 signInWithPopup(auth, googleProvider).then(() => {
@@ -887,7 +862,6 @@
                 return;
             }
 
-            // REGISTRO EMAIL SENHA
             if (lower.startsWith("registrar ")) {
                 if (args.length < 3) return writeToTerminalWithoutSaving("$ Uso: registrar [email] [senha]");
                 createUserWithEmailAndPassword(auth, args[1], args[2])
@@ -896,7 +870,6 @@
                 return;
             }
 
-            // LOGIN EMAIL SENHA
             if (lower.startsWith("logar ")) {
                 if (args.length < 3) return writeToTerminalWithoutSaving("$ Uso: logar [email] [senha]");
                 signInWithEmailAndPassword(auth, args[1], args[2])
@@ -905,7 +878,6 @@
                 return;
             }
 
-            // LOGOUT / SAIR
             if (lower === "sair" || lower === "logout") {
                 signOut(auth).then(() => {
                     writeToTerminalWithoutSaving("$ [SISTEMA] Desconectado com sucesso.");
@@ -913,7 +885,6 @@
                 return;
             }
 
-            // TROCA DE PELE (SKIN)
             if (primaryCmd === "skin") {
                 const id = parseInt(args[1], 10);
                 if (id >= 1 && id <= 12) {
@@ -925,7 +896,6 @@
                 return;
             }
 
-            // CALCOLADORA INTEGRADA
             if (primaryCmd === "calc") {
                 const expr = raw.substring(5).trim();
                 try {
@@ -937,7 +907,6 @@
                 return;
             }
 
-            // LIMPAR TELA E LINHAS INDIVIDUAIS
             if (lower.startsWith("limpar") || lower.startsWith("clear")) {
                 const keyword = raw.substring(7).trim();
                 if (keyword === "tudo" || !keyword) {
@@ -954,7 +923,6 @@
                 return;
             }
 
-            // MARCADORES DE CORES (VERMELHO / CINZA) COM ATUALIZAÇÃO E EXIBIÇÃO DE LISTA
             if (lower.startsWith("vermelho ")) {
                 const word = raw.substring(9).trim();
                 handleTodoList();
@@ -986,35 +954,70 @@
                 return;
             }
 
-            // AGENDA DE EVENTOS E COMPROMISSOS ESTÁTICOS
-            if (lower.startsWith("agenda ")) {
-                const match = raw.match(/"([^"]+)" (\d{2}\/\d{2}\/\d{4})/);
-                if (match) {
-                    scheduledEvents.push({ d: match[1], t: match[2] });
-                    writeToTerminal(`$ [AGENDA] Gravado: ${match[1]} (${match[2]})`);
-                } else {
-                    writeToTerminalWithoutSaving('$ [ERRO] Formato correto: agenda "descrição" dd/mm/aaaa');
+            // AGENDA DE EVENTOS E COMPROMISSOS (DATAS FUTURAS ESPECÍFICAS)
+            if (lower.startsWith("agenda add ") || lower.startsWith("adicionar agenda ")) {
+                const offset = lower.startsWith("agenda add ") ? 11 : 17;
+                const fullString = raw.substring(offset).trim();
+                const parts = fullString.split(";").map(p => p.trim());
+
+                if (parts.length < 2) {
+                    return writeToTerminalWithoutSaving("[AVISO] Sintaxe incorreta. Use: agenda add data ; descrição (Ex: agenda add 25/12/2026 ; Feriado de Natal)");
                 }
-                return;
-            }
 
-            if (lower === "agenda?" || lower === "agenda") {
-                if (scheduledEvents.length === 0) return writeToTerminalWithoutSaving("$ Nossos compromissos de agenda estão vazios.");
-                writeToTerminalWithoutSaving("$ --- AGENDA DE COMPROMISSOS COMPILADA ---");
-                scheduledEvents.forEach((e, i) => {
-                    writeToTerminalWithoutSaving(`  ${i + 1}. [${e.t}] ${e.d}`);
+                const dataStr = parts[0];
+                const descricao = parts[1];
+
+                const dateParts = dataStr.split("/");
+                if (dateParts.length !== 3) {
+                    return writeToTerminalWithoutSaving("[AVISO] Formato de data inválido. Use dd/mm/aaaa.");
+                }
+
+                const day = parseInt(dateParts[0], 10);
+                const month = parseInt(dateParts[1], 10) - 1;
+                const year = parseInt(dateParts[2], 10);
+                const eventDate = new Date(year, month, day);
+
+                if (isNaN(eventDate.getTime())) {
+                    return writeToTerminalWithoutSaving("[AVISO] Data inválida.");
+                }
+
+                scheduledEvents.push({
+                    data: dataStr,
+                    timestamp: eventDate.getTime(),
+                    descricao: descricao,
+                    createdAt: new Date().toLocaleDateString('pt-BR')
                 });
+
+                writeToTerminal(`$ [AGENDA] Evento agendado com sucesso para ${dataStr}: "${descricao}"`);
+                renderAgendaList();
                 return;
             }
 
-            // CALENDÁRIO INTERATIVO
+            if (lower.startsWith("agenda del ") || lower.startsWith("excluir agenda ")) {
+                const offset = lower.startsWith("agenda del ") ? 11 : 15;
+                const idx = parseInt(raw.substring(offset).trim(), 10) - 1;
+
+                if (isNaN(idx) || idx < 0 || idx >= scheduledEvents.length) {
+                    return writeToTerminalWithoutSaving("[AVISO] Índice de agenda inválido.");
+                }
+
+                const removed = scheduledEvents.splice(idx, 1);
+                writeToTerminal(`$ [AGENDA] Evento "${removed[0].descricao}" removido com sucesso.`);
+                renderAgendaList();
+                return;
+            }
+
+            if (lower === "agenda" || lower === "agendas") {
+                renderAgendaList();
+                return;
+            }
+
             if (lower === "calendario" || lower === "calendar") {
                 awaitingDateInput = true;
                 writeToTerminalWithoutSaving("$ Digite: ANO MÊS (Ex: 2026 7)");
                 return;
             }
 
-            // TIMER DE FOCO POMODORO
             if (lower.startsWith("pomodoro ")) {
                 const subCmd = args[1]?.toLowerCase();
                 clearInterval(pomodoroInterval);
@@ -1040,7 +1043,7 @@
                         }
                         m--; s = 59;
                     } else s--;
-                    
+
                     const appTitleEl = document.getElementById("app-title");
                     if (appTitleEl) {
                         appTitleEl.innerHTML = `<span class="text-[#22c55e] font-mono">&gt;_</span> POMODORO: ${m}:${s < 10 ? '0' : ''}${s}`;
@@ -1049,7 +1052,6 @@
                 return;
             }
 
-            // TAREFAS (ADD / DEL / REATIVAR / LIST) - EVOLUÇÃO: SEMPRE TRAZ A LISTA ATUALIZADA
             if (lower.startsWith("tarefa add ") || lower.startsWith("adicionar tarefa ")) {
                 const offset = lower.startsWith("tarefa add ") ? 11 : 17;
                 const taskText = raw.substring(offset).trim();
@@ -1074,7 +1076,6 @@
                 return;
             }
 
-            // REATIVAR TAREFA CONCLUÍDA POR ENGANO (RETORNA PARA PENDENTE)
             if (lower.startsWith("reativar tarefa ") || lower.startsWith("tarefa reativar ")) {
                 const idxStr = args[args.length - 1];
                 const idx = parseInt(idxStr, 10) - 1;
@@ -1098,7 +1099,6 @@
                 return;
             }
 
-            // BLOCO DE NOTAS (ADD / DEL / LIST) - EVOLUÇÃO: SEMPRE TRAZ A LISTA ATUALIZADA
             if (lower.startsWith("nota add ") || lower.startsWith("adicionar nota ")) {
                 const offset = lower.startsWith("nota add ") ? 9 : 15;
                 const noteText = raw.substring(offset).trim();
@@ -1123,13 +1123,11 @@
                 return;
             }
 
-            // MONITORMENTO DE PRAZOS REGRESSIVOS MEJC - EVOLUÇÃO: SEMPRE TRAZ A LISTA ATUALIZADA
             if (lower.startsWith("prazos")) {
                 renderDeadlinesList(args[1]);
                 return;
             }
 
-            // ADICIONAR PRAZO REGRESSIVO MANUALMENTE (SEM ASPAS)
             if (lower.startsWith("adicionar prazo ") || lower.startsWith("prazo add ")) {
                 const offset = lower.startsWith("prazo add ") ? 10 : 16;
                 const fullString = raw.substring(offset).trim();
@@ -1168,14 +1166,13 @@
                 return;
             }
 
-            // EXCLUIR PRAZO
             if (lower.startsWith("excluir prazo ") || lower.startsWith("prazo del ")) {
                 const offset = lower.startsWith("prazo del ") ? 10 : 14;
                 const filterParam = raw.substring(offset).trim().toLowerCase();
                 if (filterParam === "expirados") {
                     const before = deadlinesList.length;
                     const now = Date.now();
-                    deadlinesList = deadlinesList.filter(d => d.expirationTime > now); // Funciona nativamente com declaração let
+                    deadlinesList = deadlinesList.filter(d => d.expirationTime > now);
                     const removedCount = before - deadlinesList.length;
                     writeToTerminal(`$ [SISTEMA] Processo concluído. Foram apagados ${removedCount} prazo(s) expirados.`);
                 } else if (filterParam === "todos" || filterParam === "tudo") {
@@ -1193,13 +1190,11 @@
                 return;
             }
 
-            // PLANILHA EXCEL
             if (lower === "carregar arquivo") {
                 triggerExcelImport();
                 return;
             }
 
-            // BACKUP DE ARQUIVOS IMPORTAR / EXPORTAR
             if (lower === "importar") {
                 triggerTxtImport();
                 return;
@@ -1215,7 +1210,6 @@
                 return;
             }
 
-            // COMANDO CONFIGURAR FIREBASE
             if (lower === "configurar firebase") {
                 terminalState = "awaiting_firebase_config";
                 writeToTerminalWithoutSaving("=== CONFIGURAR FIREBASE LOCAL ===");
@@ -1223,7 +1217,6 @@
                 return;
             }
 
-            // COMANDO NÃO ENCONTRADO
             writeToTerminalWithoutSaving(`[ERRO] Comando não reconhecido: "${primaryCmd}". Digite "ajuda" para ver o manual.`, "var(--terminal-error)");
         }
 
@@ -1236,7 +1229,7 @@
         }
 
         function handleTodoList() {
-            lastActiveView = "tarefas"; // Marca tarefas como visualização ativa
+            lastActiveView = "tarefas";
             checkAndRunAutomations(); 
             if(todoList.length === 0) {
                 writeToTerminalWithoutSaving("$ Lista de tarefas ativa vazia.");
@@ -1269,7 +1262,7 @@
         }
 
         function handleNoteList() {
-            lastActiveView = "notas"; // Marca notas como visualização ativa
+            lastActiveView = "notas";
             if(notesList.length === 0) {
                 writeToTerminalWithoutSaving("$ Bloco de notas vazio.");
                 writeToTerminalWithoutSaving(`» Total: 0 notas registradas.`, "#eab308");
@@ -1284,8 +1277,42 @@
             writeToTerminalWithoutSaving(`» Total: ${notesList.length} notas registradas.`, "#eab308");
         }
 
+        function renderAgendaList() {
+            lastActiveView = "agenda";
+            if (scheduledEvents.length === 0) {
+                writeToTerminalWithoutSaving("$ Nossos compromissos de agenda estão vazios.");
+                writeToTerminalWithoutSaving(`» Total: 0 eventos agendados.`, "#38bdf8");
+                return;
+            }
+
+            // Inverte a ordenação: do mais distante para o mais próximo (mais recentes/próximos visíveis no topo)
+            scheduledEvents.sort((a, b) => b.timestamp - a.timestamp);
+
+            writeToTerminalWithoutSaving("$ --- AGENDA DE COMPROMISSOS FUTUROS ---");
+            const now = Date.now();
+            const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+            scheduledEvents.forEach((e, i) => {
+                const diff = e.timestamp - now;
+                const leftDays = Math.ceil(diff / MS_PER_DAY);
+                
+                let statusLabel = "";
+                if (leftDays < 0) {
+                    statusLabel = `(Passado há ${Math.abs(leftDays)} dias)`;
+                } else if (leftDays === 0) {
+                    statusLabel = `(É HOJE!) ⚠️`;
+                } else {
+                    statusLabel = `(Faltam ${leftDays} dias)`;
+                }
+
+                writeToTerminalWithoutSaving(`  ${i + 1}. [DATA: ${e.data}] ${e.descricao} ${statusLabel}`);
+            });
+            writeToTerminalWithoutSaving(`-------------------------------------------------`, "rgba(255,255,255,0.08)");
+            writeToTerminalWithoutSaving(`» Total: ${scheduledEvents.length} compromisso(s) na agenda.`, "#38bdf8");
+        }
+
         function renderDeadlinesList(filterType = "") {
-            lastActiveView = "prazos"; // Marca prazos como visualização ativa
+            lastActiveView = "prazos";
             let listToRender = [...deadlinesList];
             const now = Date.now();
 
@@ -1315,7 +1342,7 @@
 
             listToRender.forEach((d) => {
                 const diff = d.expirationTime - now;
-                const isOverdue = diff <= 0;                                
+                const isOverdue = diff <= 0;
 
                 let timeRemainingLabel = "";
                 if (isOverdue) {
@@ -1326,7 +1353,6 @@
                     timeRemainingLabel = `${leftDays} dia(s) restante(s)`;
                 }
 
-                // CORREÇÃO VISUAL DE PRECISÃO: Calcula o índice real comparando estritamente empenho e fornecedor normalizados.
                 const realIndex = deadlinesList.findIndex(dl => 
                     dl.evento.trim().toLowerCase() === d.evento.trim().toLowerCase() && 
                     dl.agente.trim().toLowerCase() === d.agente.trim().toLowerCase()
@@ -1345,7 +1371,6 @@
             writeToTerminalWithoutSaving(`» Total: ${total} prazos monitorados [${active} ativos | ${overdue} expirados]`, "#22c55e");
         }
 
-        // Renderizador de Calendário de texto
         function displayCustomCalendar(y, m) {
             const year = parseInt(y); const month = parseInt(m);
             if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
@@ -1399,12 +1424,15 @@
                 - <strong>excluir prazo [nº]</strong> ou <strong>prazo del [nº]</strong>: Remove cronômetro.<br>
                 - <strong>prazos</strong>: Lista todos os cronômetros ativos da MEJC.<br>
                 <br>
+                📅 <strong>AGENDA DE EVENTOS FUTUROS:</strong><br>
+                - <strong>agenda add dd/mm/aaaa ; [descrição]</strong>: Adiciona compromisso com data específica.<br>
+                - <strong>agenda del [nº]</strong>: Exclui item da agenda pelo índice.<br>
+                - <strong>agenda</strong>: Lista todos os compromissos ordenados cronologicamente.<br>
+                <br>
                 🛠️ <strong>OUTROS COMANDOS:</strong><br>
-                - <strong>carregar arquivo</strong>: Importa arquivos Excel (.xlsx) de empenhos.<br>
+                - <strong>carregar arquivo</strong>: Importa arquivos Excel de prazos (.xlsx).<br>
                 - <strong>pomodoro [minutos]</strong>: Temporizador Pomodoro integrado.<br>
                 - <strong>pomodoro parar</strong>: Para temporizador Pomodoro.<br>
-                - <strong>agenda "descrição" dd/mm/aaaa</strong>: Agenda eventos futuros.<br>
-                - <strong>agenda?</strong>: Mostra agenda cadastrada.<br>
                 - <strong>calc [expressão]</strong>: Calculadora integrada de matemática.<br>
                 - <strong>calendario</strong>: Renderizador de calendário interativo.<br>
                 - <strong>check [palavra]</strong>: Colore as linhas que contêm a palavra de cinza.<br>
@@ -1482,15 +1510,22 @@
                 const agente = prompt("Qual o agente / fornecedor?");
                 if (!agente || !agente.trim()) return;
                 const resumo = prompt("Descrição / resumo (Opcional):") || "";
-                                
+
                 const cmd = `adicionar prazo ${tempo.trim()} ; ${evento.trim()} ; ${agente.trim()} ; ${resumo.trim()}`;
+                handleCommand(cmd);
+            } else if (type === 'agenda') {
+                const dataStr = prompt("Qual a data do evento? (Formato: dd/mm/aaaa)");
+                if (!dataStr || !dataStr.trim()) return;
+                const desc = prompt("Qual a descrição do compromisso na agenda?");
+                if (!desc || !desc.trim()) return;
+
+                const cmd = `agenda add ${dataStr.trim()} ; ${desc.trim()}`;
                 handleCommand(cmd);
             }
         }
         window.triggerQuickAdd = triggerQuickAdd;
 
         document.addEventListener("click", (e) => {
-            // Se clicar na área do terminal, dá foco a ele para usar as setas direcionais para rolar o conteúdo
             if (e.target.closest('#terminal')) {
                 terminal.focus();
             } else if (e.target.closest('#input-container') || e.target.closest('#quick-bar-exibir') || e.target.closest('#quick-bar-adicionar') || e.target.closest('#app-header') || e.target.closest('#news-section')) {
@@ -1500,7 +1535,6 @@
             }
         });
 
-        // Se o usuário começar a digitar enquanto o terminal está selecionado para leitura, o foco volta para o input
         terminal.addEventListener("keydown", (e) => {
             if (e.key === "ArrowUp") {
                 terminal.scrollTop -= 35; 
@@ -1553,15 +1587,13 @@
             }
         });
 
-        // Inicialização do Sistema
         window.onload = function() {
             writeToTerminalWithoutSaving("=================================================", "var(--terminal-prompt)");
-            writeToTerminalWithoutSaving("   SISTEMA DE GESTÃO DE BACKLOGS - COMPATIVEL UNIX", "var(--terminal-prompt)");
+            writeToTerminalWithoutSaving("   SISTEMA DE GESTÃO DE BACKLOGS", "var(--terminal-prompt)");
             writeToTerminalWithoutSaving("   Digite 'ajuda' para listar todos os comandos.", "var(--terminal-text)");
             writeToTerminalWithoutSaving("=================================================", "var(--terminal-prompt)");
             loadLocalBackup();
         };
-
     </script>
 </body>
 </html>

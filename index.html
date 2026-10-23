@@ -24,8 +24,8 @@
             --secondary-color: #6b7280;
             --border-color: #d1d5db;
             --shadow-color: rgba(15, 23, 42, .05);
-            --accent-glow: rgba(107,114,128,.12);
-            --success-color: #6b7280;
+            --accent-glow: rgba(107, 114, 128, .12);
+            --success-color: #2e7d32;
             --font-family: 'Inter', system-ui, -apple-system, sans-serif;
             --border-radius: 10px;
         }
@@ -56,13 +56,31 @@
             align-items: start
         }
 
-        .top-tools { grid-area: top-tools; display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:stretch; }
-        .controls-column { grid-area: input; }
-        .reader-column { grid-area: reader; }
+        .top-tools {
+            grid-area: top-tools;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: stretch;
+        }
 
-        .top-tools > .card { min-height: 136px; height:100%; }
+        .controls-column {
+            grid-area: input;
+        }
+
+        .reader-column {
+            grid-area: reader;
+        }
+
+        .top-tools>.card {
+            min-height: 136px;
+            height: 100%;
+        }
+
         .quick-search-card .search-row input,
-        .link-card #rotuloLinkInput { height: 38px; }
+        .link-card #rotuloLinkInput {
+            height: 38px;
+        }
 
         header {
             grid-area: header;
@@ -142,12 +160,96 @@
         select:focus {
             outline: none;
             border-color: #9ca3af;
-            box-shadow: 0 0 0 2px rgba(107,114,128,.12)
+            box-shadow: 0 0 0 2px rgba(107, 114, 128, .12)
         }
 
         #rawText {
             height: 210px;
             resize: vertical
+        }
+
+        /* Modo de edição rápida: foco exclusivo em inserir quebras de linha. */
+        .text-edit-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 6px 0 8px;
+        }
+
+        .text-edit-toolbar .edit-status {
+            font-size: 11px;
+            color: var(--secondary-color);
+        }
+
+        #rawText.editing-mode {
+            caret-color: #2563eb;
+            height: 520px;
+            min-height: 520px;
+            font-size: 22px;
+            line-height: 1.65;
+            padding: 16px 18px;
+            background: #fff;
+            color: #1f2937;
+            border-color: #9ca3af;
+            box-shadow: 0 0 0 3px rgba(107, 114, 128, .10);
+        }
+
+        #insertLineBreakBtn {
+            background: #4b5563;
+        }
+
+        .text-edit-actions {
+            align-items: center;
+        }
+
+        .text-edit-actions-top {
+            justify-content: flex-start !important;
+            margin: 0 0 8px;
+            flex-wrap: wrap;
+        }
+
+        .text-edit-actions-top button {
+            white-space: nowrap;
+        }
+
+        #undoTextEditBtn {
+            margin-left: auto;
+        }
+
+        @media(max-width:600px) {
+            .text-edit-actions-top {
+                gap: 6px;
+            }
+
+            .text-edit-actions-top button {
+                padding: 7px 8px;
+                font-size: 11px;
+            }
+        }
+
+        /* O cursor permanece visível mesmo com a caixa em modo somente leitura. */
+        #rawText.editing-mode {
+            caret-color: #2563eb !important;
+        }
+
+        #rawText.editing-mode:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .14);
+        }
+
+        #insertLineBreakBtn:hover {
+            background: #374151;
+        }
+
+        @media(max-width:600px) {
+            #rawText.editing-mode {
+                height: 430px;
+                min-height: 430px;
+                font-size: 20px;
+                line-height: 1.6;
+            }
         }
 
         .button-group {
@@ -167,7 +269,7 @@
             font-size: 12px;
             font-family: inherit;
             transition: .15s;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px
@@ -283,6 +385,176 @@
             color: var(--heading-color)
         }
 
+        .reader-navigation {
+            display: grid;
+            grid-template-columns: 28px minmax(0, 1fr) 28px;
+            gap: 6px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .paragraph-nav {
+            width: 28px;
+            height: 56px;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent !important;
+            color: #9ca3af;
+            box-shadow: none;
+            font-size: 34px;
+            line-height: 1;
+            font-weight: 300;
+            cursor: pointer;
+            align-self: center;
+            transition: color .15s, transform .15s;
+        }
+
+        .paragraph-nav:hover {
+            background: transparent !important;
+            color: #4b5563;
+            transform: scale(1.08);
+        }
+
+        .paragraph-nav:disabled {
+            opacity: .25;
+            cursor: default;
+        }
+
+        /* Modo leitura ampliado acionado pelas setas. */
+        .reader-column.reader-reading-mode {
+            position: fixed;
+            inset: 10px;
+            z-index: 2500;
+            padding: 10px;
+            background: #fff;
+            overflow: auto;
+        }
+
+        .reader-column.reader-reading-mode .reader-container {
+            height: 100%;
+            min-height: calc(100vh - 20px);
+        }
+
+        .reader-column.reader-reading-mode .reader-stage {
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reader-column.reader-reading-mode .reader-status {
+            flex: 0 0 auto;
+        }
+
+        .reader-column.reader-reading-mode .reader-navigation {
+            flex: 1 1 0;
+            min-height: 0;
+            grid-template-columns: 1fr;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reader-column.reader-reading-mode .paragraph-nav {
+            position: absolute;
+            top: 12px;
+            z-index: 5;
+        }
+
+        .reader-column.reader-reading-mode #prevBtn {
+            left: 8px;
+        }
+
+        .reader-column.reader-reading-mode #nextBtn {
+            right: 8px;
+        }
+
+        .reader-column.reader-reading-mode #output {
+            min-height: 0;
+            height: auto;
+            font-size: clamp(28px, 3vw, 42px);
+            padding: 42px 7vw 72px;
+            width: 100%;
+            overflow: hidden;
+            align-items: flex-start;
+
+            /* No modo leitura o texto fica livre sobre o fundo branco.
+               A moldura pertence somente à caixa normal, não a cada página. */
+            background: #fff;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* Controle de voz: permanece visível independentemente de "Mais funções".
+           Fica centralizado imediatamente abaixo da caixa de leitura. */
+        .reader-play-pause {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            padding: 0;
+            margin: 6px auto 0;
+            border-radius: 50%;
+            background: #111827;
+            color: #fff;
+            border: 0;
+            box-shadow: none;
+            font-size: 17px;
+            line-height: 1;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .reader-play-pause:hover {
+            background: #000;
+            transform: scale(1.04);
+        }
+
+        .reader-play-pause:focus-visible {
+            outline: 2px solid #6b7280;
+            outline-offset: 3px;
+        }
+
+        .reader-column.reader-reading-mode .reader-play-pause {
+            position: fixed;
+            left: 50%;
+            bottom: 16px;
+            transform: translateX(-50%);
+            margin: 0;
+            z-index: 10000;
+        }
+
+        .reader-column.reader-reading-mode .reader-play-pause:hover {
+            transform: translateX(-50%) scale(1.04);
+        }
+
+        .reader-exit-mode {
+            display: none;
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        .reader-column.reader-reading-mode .reader-exit-mode {
+            display: inline-flex;
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            left: auto;
+            transform: none;
+            z-index: 9999;
+            margin: 0;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, .20);
+        }
+
+        .reader-column.reader-reading-mode {
+            overflow: hidden;
+        }
+
         .reader-container #output {
             min-height: 430px;
             width: 100%;
@@ -302,26 +574,7 @@
         }
 
         .controls-vertical {
-            display: flex;
-            flex-direction: row;
-            gap: 7px;
-            padding: 8px;
-            background: var(--card-bg-color);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px var(--shadow-color);
-            justify-content: center
-        }
-
-        .controls-vertical button {
-            width: 42px;
-            height: 38px;
-            font-size: 1rem;
-            padding: 0
-        }
-
-        .controls-vertical button:hover {
-            transform: translateY(-1px)
+            display: none !important;
         }
 
         .search-row {
@@ -489,7 +742,7 @@
 
         .editor-item.selected-cell {
             border-color: #9ca3af;
-            box-shadow: 0 0 0 2px rgba(107,114,128,.12)
+            box-shadow: 0 0 0 2px rgba(107, 114, 128, .12)
         }
 
         .editor-item p {
@@ -513,8 +766,8 @@
         .word-module {
             display: inline-block;
             color: #111;
-            background: rgba(107,114,128,.10);
-            border: 1px solid rgba(107,114,128,.10);
+            background: rgba(107, 114, 128, .10);
+            border: 1px solid rgba(107, 114, 128, .10);
             border-radius: 5px;
             padding: 1px 3px;
             margin: 1px 1px;
@@ -523,28 +776,28 @@
         }
 
         .word-module:nth-child(6n+2) {
-            background: rgba(107,114,128,.10);
-            border-color: rgba(107,114,128,.10)
+            background: rgba(107, 114, 128, .10);
+            border-color: rgba(107, 114, 128, .10)
         }
 
         .word-module:nth-child(6n+3) {
-            background: rgba(107,114,128,.10);
-            border-color: rgba(107,114,128,.10)
+            background: rgba(107, 114, 128, .10);
+            border-color: rgba(107, 114, 128, .10)
         }
 
         .word-module:nth-child(6n+4) {
-            background: rgba(107,114,128,.10);
-            border-color: rgba(107,114,128,.10)
+            background: rgba(107, 114, 128, .10);
+            border-color: rgba(107, 114, 128, .10)
         }
 
         .word-module:nth-child(6n+5) {
-            background: rgba(107,114,128,.09);
-            border-color: rgba(107,114,128,.09)
+            background: rgba(107, 114, 128, .09);
+            border-color: rgba(107, 114, 128, .09)
         }
 
         .word-module:nth-child(6n) {
-            background: rgba(107,114,128,.10);
-            border-color: rgba(107,114,128,.10)
+            background: rgba(107, 114, 128, .10);
+            border-color: rgba(107, 114, 128, .10)
         }
 
         .word-module:hover {
@@ -553,7 +806,7 @@
 
         .word-module.selected-word {
             outline: 2px solid var(--primary-color);
-            background: rgba(107,114,128,.18)
+            background: rgba(107, 114, 128, .18)
         }
 
         .editor-actions {
@@ -808,10 +1061,24 @@
         }
 
         @media(max-width:900px) {
-            body { background: #f5f7fa; }
+            body {
+                background: #f5f7fa;
+            }
+
             .container {
                 grid-template-columns: 1fr;
                 grid-template-areas: 'header' 'top-tools' 'input' 'reader'
+            }
+
+            .reader-navigation {
+                grid-template-columns: 24px minmax(0, 1fr) 24px;
+                gap: 4px;
+            }
+
+            .paragraph-nav {
+                width: 24px;
+                height: 48px;
+                font-size: 28px;
             }
 
             .reader-container #output {
@@ -827,7 +1094,9 @@
                 min-width: 0
             }
 
-            .top-tools { grid-template-columns: 1fr; }
+            .top-tools {
+                grid-template-columns: 1fr;
+            }
 
             .google-banner {
                 width: 98vw;
@@ -844,10 +1113,27 @@
                 font-size: 11px
             }
 
+            .reader-navigation {
+                grid-template-columns: 22px minmax(0, 1fr) 22px;
+                gap: 3px;
+            }
+
+            .paragraph-nav {
+                width: 22px;
+                height: 44px;
+                font-size: 26px;
+            }
+
             .reader-container #output {
                 font-size: 22px;
                 min-height: 320px;
                 padding: 25px 20px
+            }
+
+            .reader-play-pause {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
             }
 
             .reader-status {
@@ -874,136 +1160,455 @@
         /* =======================================================
            GUIAS ESPECÍFICOS DAS FUNÇÕES
            ======================================================= */
-        .function-help-btn{
-            width:27px;height:27px;padding:0;border-radius:50%;
-            background:#f3f4f6;color:#374151;border:1px solid #d1d5db;
-            font-size:12px;font-weight:800;display:inline-flex;
-            align-items:center;justify-content:center;
+        .function-help-btn {
+            width: 27px;
+            height: 27px;
+            padding: 0;
+            border-radius: 50%;
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .function-help-btn:hover{background:#e5e7eb;color:#374151;transform:none}
-        .function-help-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+
+        .function-help-btn:hover {
+            background: #e5e7eb;
+            color: #374151;
+            transform: none
+        }
+
+        .function-help-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap
+        }
 
         .merge-instruction {
             margin: 10px 15px 0;
             padding: 10px 12px;
             border: 1px solid #d1d5db;
             border-radius: 10px;
-            background: linear-gradient(135deg, rgba(107,114,128,.10), rgba(107,114,128,.08));
+            background: linear-gradient(135deg, rgba(107, 114, 128, .10), rgba(107, 114, 128, .08));
             color: #4b5563;
             font-size: 12px;
             line-height: 1.45;
             font-weight: 650;
         }
-        .merge-instruction strong { color: #374151; }
 
-        .function-guide-overlay{
-            position:fixed;inset:0;z-index:5100;display:none;align-items:center;justify-content:center;
-            padding:14px;background:rgba(15,23,42,.48);backdrop-filter:blur(4px);
-            -webkit-backdrop-filter:blur(4px);
+        .merge-instruction strong {
+            color: #374151;
         }
-        .function-guide-overlay.active{display:flex}
-        .function-guide-card{
-            width:min(560px,94vw);background:var(--card-bg-color);
-            border:1px solid #d1d5db;border-radius:16px;
-            box-shadow:0 28px 90px rgba(15,23,42,.30);overflow:hidden;
+
+        .function-guide-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            background: rgba(15, 23, 42, .48);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
-        .function-guide-head{
-            display:flex;align-items:center;gap:10px;padding:13px 15px;
-            background:linear-gradient(135deg,rgba(107,114,128,.12),rgba(107,114,128,.08));
-            border-bottom:1px solid #e5e7eb;
+
+        .function-guide-overlay.active {
+            display: flex
         }
-        .function-guide-icon{
-            width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
-            background:linear-gradient(135deg,#6b7280,#6b7280);color:#fff;font-size:18px;
+
+        .function-guide-card {
+            width: min(560px, 94vw);
+            background: var(--card-bg-color);
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            box-shadow: 0 28px 90px rgba(15, 23, 42, .30);
+            overflow: hidden;
         }
-        .function-guide-kicker{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4b5563}
-        .function-guide-title{margin:2px 0 0;font-size:16px;color:var(--heading-color)}
-        .function-guide-close{
-            margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid #d1d5db;
-            background:var(--bg-color);color:#4b5563;font-size:18px;cursor:pointer;
+
+        .function-guide-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 15px;
+            background: linear-gradient(135deg, rgba(107, 114, 128, .12), rgba(107, 114, 128, .08));
+            border-bottom: 1px solid #e5e7eb;
         }
-        .function-guide-body{padding:15px}
-        .function-guide-step{
-            display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start;
-            padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;
+
+        .function-guide-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #6b7280, #6b7280);
+            color: #fff;
+            font-size: 18px;
         }
-        .function-guide-num{
-            width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
-            background:#4b5563;color:#fff;font-weight:800;font-size:12px;
+
+        .function-guide-kicker {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #4b5563
         }
-        .function-guide-step strong{display:block;color:var(--heading-color);font-size:13px;margin-bottom:4px}
-        .function-guide-step span{display:block;color:var(--text-color);font-size:12px;line-height:1.55}
-        .function-guide-tip{
-            margin-top:10px;padding:10px 11px;border:1px dashed #d1d5db;border-radius:10px;
-            background:rgba(229,231,235,.55);font-size:11px;line-height:1.5;color:#374151
+
+        .function-guide-title {
+            margin: 2px 0 0;
+            font-size: 16px;
+            color: var(--heading-color)
         }
-        .function-guide-footer{
-            display:flex;align-items:center;justify-content:space-between;gap:8px;
-            padding:11px 15px;border-top:1px solid var(--border-color)
+
+        .function-guide-close {
+            margin-left: auto;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #d1d5db;
+            background: var(--bg-color);
+            color: #4b5563;
+            font-size: 18px;
+            cursor: pointer;
         }
-        .function-guide-check{
-            display:flex;align-items:center;gap:6px;font-size:11px;color:var(--secondary-color);cursor:pointer
+
+        .function-guide-body {
+            padding: 15px
         }
-        .function-guide-actions{display:flex;gap:6px;margin-left:auto}
-        .function-guide-actions button{min-width:110px}
-        .function-guide-primary{
-            background:linear-gradient(135deg,#6b7280,#6b7280)!important;
+
+        .function-guide-step {
+            display: grid;
+            grid-template-columns: 32px 1fr;
+            gap: 10px;
+            align-items: start;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
         }
-        @media(max-width:600px){
-            .function-guide-card{width:98vw}
-            .function-guide-footer{flex-direction:column;align-items:stretch}
-            .function-guide-actions{margin-left:0}
-            .function-guide-actions button{flex:1}
+
+        .function-guide-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            background: #4b5563;
+            color: #fff;
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .function-guide-step strong {
+            display: block;
+            color: var(--heading-color);
+            font-size: 13px;
+            margin-bottom: 4px
+        }
+
+        .function-guide-step span {
+            display: block;
+            color: var(--text-color);
+            font-size: 12px;
+            line-height: 1.55
+        }
+
+        .function-guide-tip {
+            margin-top: 10px;
+            padding: 10px 11px;
+            border: 1px dashed #d1d5db;
+            border-radius: 10px;
+            background: rgba(229, 231, 235, .55);
+            font-size: 11px;
+            line-height: 1.5;
+            color: #374151
+        }
+
+        .function-guide-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 11px 15px;
+            border-top: 1px solid var(--border-color)
+        }
+
+        .function-guide-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--secondary-color);
+            cursor: pointer
+        }
+
+        .function-guide-actions {
+            display: flex;
+            gap: 6px;
+            margin-left: auto
+        }
+
+        .function-guide-actions button {
+            min-width: 110px
+        }
+
+        .function-guide-primary {
+            background: linear-gradient(135deg, #6b7280, #6b7280) !important;
+        }
+
+        @media(max-width:600px) {
+            .function-guide-card {
+                width: 98vw
+            }
+
+            .function-guide-footer {
+                flex-direction: column;
+                align-items: stretch
+            }
+
+            .function-guide-actions {
+                margin-left: 0
+            }
+
+            .function-guide-actions button {
+                flex: 1
+            }
         }
 
 
         /* =======================================================
            GUIA INTERATIVO — LEITURA GUIADA
            ======================================================= */
-        .flow-guide-overlay{position:fixed;inset:0;z-index:5000;display:none;background:rgba(15,23,42,.50);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:14px;}
-        .flow-guide-overlay.active{display:flex;}
-        .flow-guide-card{width:min(620px,94vw);background:var(--card-bg-color);border:1px solid #d1d5db;border-radius:16px;box-shadow:0 26px 80px rgba(15,23,42,.28);overflow:hidden;}
-        .flow-guide-head{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid #e5e7eb;background:linear-gradient(135deg,rgba(107,114,128,.12),rgba(75,85,99,.08));}
-        .flow-guide-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#4b5563;color:#fff;font-size:18px;box-shadow:0 6px 16px rgba(75,85,99,.16);}
-        .flow-guide-kicker{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4b5563;}
-        .flow-guide-title{margin:2px 0 0;font-size:16px;color:var(--heading-color);}
-        .flow-guide-close{margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid #d1d5db;background:var(--bg-color);color:#4b5563;cursor:pointer;font-size:18px;}
-        .flow-guide-body{padding:15px;}
-        .flow-guide-progress{display:flex;gap:5px;margin-bottom:12px;}
-        .flow-guide-progress span{height:4px;flex:1;border-radius:99px;background:#e5e7eb;}
-        .flow-guide-progress span.active{background:#4b5563;}
-        .flow-guide-step{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:rgba(243,244,246,.9);}
-        .flow-guide-step-num{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#4b5563;color:#fff;font-weight:800;font-size:12px;}
-        .flow-guide-step strong{display:block;color:var(--heading-color);font-size:13px;margin-bottom:3px;}
-        .flow-guide-step span{display:block;color:var(--text-color);font-size:12px;line-height:1.52;}
-        .flow-guide-tip{margin-top:10px;padding:10px 11px;border:1px dashed #d1d5db;border-radius:10px;background:rgba(229,231,235,.55);font-size:11px;line-height:1.5;color:#374151;}
-        .flow-guide-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 15px;border-top:1px solid var(--border-color);}
-        .flow-guide-check{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--secondary-color);cursor:pointer;}
-        .flow-guide-actions{display:flex;gap:6px;margin-left:auto;}
-        .flow-guide-actions button{min-width:92px;}
-        .flow-guide-target{outline:3px solid #9ca3af !important;outline-offset:3px !important;box-shadow:0 0 0 6px rgba(107,114,128,.15),0 8px 20px rgba(75,85,99,.12) !important;position:relative;z-index:5001 !important;}
-        @media(max-width:600px){.flow-guide-card{width:98vw}.flow-guide-footer{flex-direction:column;align-items:stretch}.flow-guide-actions{margin-left:0}.flow-guide-actions button{flex:1;}}
+        .flow-guide-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            display: none;
+            background: rgba(15, 23, 42, .50);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
 
-    
-        .google-inline-hint{
-            margin-top:10px;
-            padding:10px 12px;
-            border-left:4px solid #6b7280;
-            border-radius:9px;
-            background:#f3f4f6;
-            color:#4b5563;
-            display:flex;
-            flex-direction:column;
-            gap:3px;
-            font-size:.78rem;
-            line-height:1.4;
+        .flow-guide-overlay.active {
+            display: flex;
         }
-        .google-inline-hint span{color:#374151;}
-        .google-inline-hint strong{font-weight:850;}
-        @media(max-width:700px){
-            .google-inline-hint{font-size:.74rem;}
+
+        .flow-guide-card {
+            width: min(620px, 94vw);
+            background: var(--card-bg-color);
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            box-shadow: 0 26px 80px rgba(15, 23, 42, .28);
+            overflow: hidden;
         }
-</style>
+
+        .flow-guide-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, rgba(107, 114, 128, .12), rgba(75, 85, 99, .08));
+        }
+
+        .flow-guide-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: #4b5563;
+            color: #fff;
+            font-size: 18px;
+            box-shadow: 0 6px 16px rgba(75, 85, 99, .16);
+        }
+
+        .flow-guide-kicker {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #4b5563;
+        }
+
+        .flow-guide-title {
+            margin: 2px 0 0;
+            font-size: 16px;
+            color: var(--heading-color);
+        }
+
+        .flow-guide-close {
+            margin-left: auto;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #d1d5db;
+            background: var(--bg-color);
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .flow-guide-body {
+            padding: 15px;
+        }
+
+        .flow-guide-progress {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .flow-guide-progress span {
+            height: 4px;
+            flex: 1;
+            border-radius: 99px;
+            background: #e5e7eb;
+        }
+
+        .flow-guide-progress span.active {
+            background: #4b5563;
+        }
+
+        .flow-guide-step {
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            gap: 10px;
+            align-items: start;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: rgba(243, 244, 246, .9);
+        }
+
+        .flow-guide-step-num {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            background: #4b5563;
+            color: #fff;
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .flow-guide-step strong {
+            display: block;
+            color: var(--heading-color);
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .flow-guide-step span {
+            display: block;
+            color: var(--text-color);
+            font-size: 12px;
+            line-height: 1.52;
+        }
+
+        .flow-guide-tip {
+            margin-top: 10px;
+            padding: 10px 11px;
+            border: 1px dashed #d1d5db;
+            border-radius: 10px;
+            background: rgba(229, 231, 235, .55);
+            font-size: 11px;
+            line-height: 1.5;
+            color: #374151;
+        }
+
+        .flow-guide-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 11px 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .flow-guide-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .flow-guide-actions {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .flow-guide-actions button {
+            min-width: 92px;
+        }
+
+        .flow-guide-target {
+            outline: 3px solid #9ca3af !important;
+            outline-offset: 3px !important;
+            box-shadow: 0 0 0 6px rgba(107, 114, 128, .15), 0 8px 20px rgba(75, 85, 99, .12) !important;
+            position: relative;
+            z-index: 5001 !important;
+        }
+
+        @media(max-width:600px) {
+            .flow-guide-card {
+                width: 98vw
+            }
+
+            .flow-guide-footer {
+                flex-direction: column;
+                align-items: stretch
+            }
+
+            .flow-guide-actions {
+                margin-left: 0
+            }
+
+            .flow-guide-actions button {
+                flex: 1;
+            }
+        }
+
+
+        .google-inline-hint {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-left: 4px solid #6b7280;
+            border-radius: 9px;
+            background: #f3f4f6;
+            color: #4b5563;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            font-size: .78rem;
+            line-height: 1.4;
+        }
+
+        .google-inline-hint span {
+            color: #374151;
+        }
+
+        .google-inline-hint strong {
+            font-weight: 850;
+        }
+
+        @media(max-width:700px) {
+            .google-inline-hint {
+                font-size: .74rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -1011,9 +1616,10 @@
         <header>
             <h1>Leitura <span>Guiada</span></h1>
             <div class="header-controls">
-                <button type="button" id="advancedToggleBtn" onclick="toggleAdvancedFunctions()" title="Mostrar outras funções">⚙ Mais funções</button>
+                <button type="button" id="advancedToggleBtn" onclick="toggleAdvancedFunctions()"
+                    title="Mostrar outras funções">⚙ Mais funções</button>
                 <button type="button" onclick="openFlowGuide()" title="Como usar a Leitura Guiada">❔ Como usar</button>
-                
+
             </div>
         </header>
 
@@ -1026,57 +1632,77 @@
                 </div>
                 <div class="search-actions">
                     <span class="function-help-row">
-                        <button id="googleSearchBtn" type="button" class="secondary" onclick="handleGoogleAction()">🌐 Ver resultados do Google</button>
-                        <button type="button" class="function-help-btn" onclick="openFunctionGuide('google')" title="Como usar a pesquisa no Google">?</button>
+                        <button id="googleSearchBtn" type="button" class="secondary" onclick="handleGoogleAction()">🌐
+                            Ver resultados do Google</button>
+                        <button type="button" class="function-help-btn" onclick="openFunctionGuide('google')"
+                            title="Como usar a pesquisa no Google">?</button>
                     </span>
                 </div>
-                <div id="googleInlineHint" class="google-inline-hint" role="status" aria-live="polite" style="display:none;">
+                <div id="googleInlineHint" class="google-inline-hint" role="status" aria-live="polite"
+                    style="display:none;">
                     <strong>📋 Pesquisa aberta em uma nova aba.</strong>
-                    <span>Selecione com o mouse o trecho que deseja estudar, copie com <strong>Ctrl+C</strong>, volte para a Leitura Guiada e cole o texto na caixa de entrada.</span>
+                    <span>Selecione com o mouse o trecho que deseja estudar e copie com <strong>Ctrl+C</strong>. Ao
+                        voltar para a Leitura Guiada, o texto será colocado automaticamente na caixa de entrada.</span>
                 </div>
             </div>
-        <div class="card link-card">
-            <h3>🔗 Salvar no Alumno</h3>
-            <div class="link-layout">
-                <div>
-                    <p id="statusVinculo" class="link-status">Carregando dados do tópico...</p>
-                    <label for="rotuloLinkInput">Nome do link</label>
-                    <input type="text" id="rotuloLinkInput" value="Leitura Guiada"
-                        placeholder="Ex.: Leitura Guiada - Aula 1" style="margin-bottom:0">
-                </div>
-                <div class="link-actions">
-                    <div class="function-help-row" style="justify-content:flex-end">
-                        <button type="button" class="function-help-btn" onclick="openFunctionGuide('save')" title="Como salvar no Alumno">?</button>
-                        <button id="saveLinkBtn" onclick="handleSaveAction()" class="success" style="flex:1">💾
-                        Salvar e enviar para o Alumno</button>
+            <div class="card link-card">
+                <h3>🔗 Salvar no Alumno</h3>
+                <div class="link-layout">
+                    <div>
+                        <p id="statusVinculo" class="link-status">Carregando dados do tópico...</p>
+                        <label for="rotuloLinkInput">Nome do link</label>
+                        <input type="text" id="rotuloLinkInput" value="Leitura Guiada"
+                            placeholder="Ex.: Leitura Guiada - Aula 1" style="margin-bottom:0">
+                    </div>
+                    <div class="link-actions">
+                        <div class="function-help-row" style="justify-content:flex-end">
+                            <button type="button" class="function-help-btn" onclick="openFunctionGuide('save')"
+                                title="Como salvar no Alumno">?</button>
+                            <button id="saveLinkBtn" onclick="handleSaveAction()" class="success" style="flex:1">💾
+                                Salvar e enviar para o Alumno</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
 
         <aside class="controls-column">
             <div class="card">
                 <h3>1. Entrada e preparação</h3>
                 <label for="rawText">Texto original <span id="rawTextCounter" style="font-weight:400"></span></label>
+                <div class="text-edit-toolbar">
+                    <span id="textEditStatus" class="edit-status">Edite apenas quando precisar inserir quebras de
+                        linha.</span>
+                    <button type="button" id="editTextBtn" onclick="toggleTextEditMode()">✏️ Editar</button>
+                </div>
+                <div id="textEditActions" class="text-edit-toolbar text-edit-actions-top"
+                    style="display:none;justify-content:flex-start">
+                    <button type="button" id="finishTextEditTopBtn" onclick="generateSentences()" class="success">✓
+                        Concluir a edição</button>
+                    <button type="button" id="insertLineBreakBtn" onclick="insertTextLineBreak()">↵ Quebra de
+                        linha</button>
+                    <button type="button" id="undoTextEditBtn" onclick="undoTextEdit()" class="secondary" disabled>↶
+                        Desfazer</button>
+                </div>
                 <textarea id="rawText" placeholder="Cole ou digite seu texto aqui..."
-                    oninput="updateCounters()"></textarea>
+                    oninput="handleRawTextInput()"></textarea>
                 <div class="advanced-functions" id="advancedFunctions" style="display:none">
                     <div class="button-group">
                         <button onclick="copyRawText()">📑 Copiar</button>
                         <button onclick="pasteFromClipboard()">📋 Colar</button>
                         <span class="function-help-row">
-                            <button id="manualEditorBtn" onclick="handleManualEditorAction()">✂️ Aparar e organizar</button>
-                            <button type="button" class="function-help-btn" onclick="openFunctionGuide('trim')" title="Como usar Aparar e organizar">?</button>
+                            <button id="manualEditorBtn" onclick="handleManualEditorAction()">✂️ Aparar e
+                                organizar</button>
+                            <button type="button" class="function-help-btn" onclick="openFunctionGuide('trim')"
+                                title="Como usar Aparar e organizar">?</button>
                         </span>
                         <button onclick="clearRawText()" class="secondary">🗑️ Limpar</button>
                     </div>
                 </div>
-                <div style="margin-top:10px">
-                    <label for="summaryPercent">Proporção do resumo (% de frases)</label>
-                    <input type="number" id="summaryPercent" value="100" min="5" max="100" step="5">
-                </div>
-                <button id="generateBtn" onclick="generateSentences()" style="width:100%;margin-top:2px">📝 Resumir e iniciar
+                <button type="button" id="organizeTextBtn" onclick="organizeRawText()"
+                    title="Organizar automaticamente o texto colado" style="width:100%;margin-top:2px">✨ Organizar
+                    texto</button>
+                <button id="generateBtn" onclick="generateSentences()" style="width:100%;margin-top:10px">📝 Iniciar
                     leitura</button>
             </div>
 
@@ -1111,15 +1737,18 @@
             <div class="reader-container">
                 <div class="reader-stage">
                     <div class="reader-status"><span id="readingPosition">Pronto para leitura</span><span
-                            id="readingHint">Cole o texto e clique em Resumir.</span></div>
-                    <div id="output">Bem-vindo ao Leitura Guiada! Cole um texto e clique em Resumir.</div>
-                </div>
-                <div class="controls-vertical" aria-label="Controles de leitura" style="display:none">
-                    <button id="prevBtn" onclick="prevSentence()" title="Anterior">⏮️</button>
-                    <button id="playPauseBtn" onclick="playPauseToggle()" title="Reproduzir/Pausar">▶️</button>
-                    <button id="stopBtn" onclick="stopReading()" title="Parar">⏹️</button>
-                    <button id="nextBtn" onclick="nextSentence()" title="Próxima">⏭️</button>
-                    <button id="voiceToggleBtn" onclick="toggleVoice()" title="Voz On/Off">🗣️</button>
+                            id="readingHint">Cole o texto e clique em Iniciar leitura.</span></div>
+                    <div class="reader-navigation" aria-label="Navegação entre parágrafos">
+                        <button type="button" id="prevBtn" class="paragraph-nav" onclick="prevSentence()"
+                            title="Parágrafo anterior" aria-label="Parágrafo anterior">‹</button>
+                        <div id="output">Bem-vindo ao Leitura Guiada! Cole um texto e clique em Resumir.</div>
+                        <button type="button" id="nextBtn" class="paragraph-nav" onclick="nextSentence()"
+                            title="Próximo parágrafo" aria-label="Próximo parágrafo">›</button>
+                    </div>
+                    <button type="button" id="playPauseBtn" class="reader-play-pause" onclick="playPauseToggle()"
+                        title="Ler / Pausar" aria-label="Ler / Pausar">▶</button>
+                    <button type="button" id="readerExitModeBtn" class="reader-exit-mode secondary"
+                        onclick="exitReaderReadingMode()">✕ Sair do modo leitura</button>
                 </div>
             </div>
 
@@ -1153,10 +1782,13 @@
                 <div id="flowGuideTip" class="flow-guide-tip"></div>
             </div>
             <div class="flow-guide-footer">
-                <label class="flow-guide-check"><input type="checkbox" id="flowGuideDisable"> Não mostrar novamente</label>
+                <label class="flow-guide-check"><input type="checkbox" id="flowGuideDisable"> Não mostrar
+                    novamente</label>
                 <div class="flow-guide-actions">
-                    <button type="button" class="secondary" id="flowGuideBackBtn" onclick="flowGuideBack()">← Voltar</button>
-                    <button type="button" class="primary" id="flowGuideNextBtn" onclick="flowGuideNext()">Avançar →</button>
+                    <button type="button" class="secondary" id="flowGuideBackBtn" onclick="flowGuideBack()">←
+                        Voltar</button>
+                    <button type="button" class="primary" id="flowGuideNextBtn" onclick="flowGuideNext()">Avançar
+                        →</button>
                 </div>
             </div>
         </div>
@@ -1171,7 +1803,8 @@
                     <div class="function-guide-kicker">Como usar</div>
                     <h3 id="functionGuideTitle" class="function-guide-title">Ajuda da função</h3>
                 </div>
-                <button type="button" class="function-guide-close" onclick="closeFunctionGuide()" title="Fechar">×</button>
+                <button type="button" class="function-guide-close" onclick="closeFunctionGuide()"
+                    title="Fechar">×</button>
             </div>
             <div class="function-guide-body">
                 <div id="functionGuideStep"></div>
@@ -1183,7 +1816,8 @@
                 </label>
                 <div class="function-guide-actions">
                     <button type="button" class="secondary" onclick="closeFunctionGuide()">Cancelar</button>
-                    <button type="button" id="functionGuideContinue" class="function-guide-primary" onclick="continueFunctionGuide()">Continuar →</button>
+                    <button type="button" id="functionGuideContinue" class="function-guide-primary"
+                        onclick="continueFunctionGuide()">Continuar →</button>
                 </div>
             </div>
         </div>
@@ -1196,7 +1830,8 @@
                     onclick="closeManualEditor()">&times;</button>
             </div>
             <div class="merge-instruction">
-                🔗 <strong>Para juntar duas células:</strong> clique no botão 🔗 da primeira célula. Ele mescla essa célula diretamente com a próxima célula abaixo.
+                🔗 <strong>Para juntar duas células:</strong> clique no botão 🔗 da primeira célula. Ele mescla essa
+                célula diretamente com a próxima célula abaixo.
             </div>
             <div id="editor-list" class="editor-list"></div>
             <div id="word-toolbar" class="word-toolbar">
@@ -1212,8 +1847,11 @@
                         title="Mover palavra(s) para a esquerda">◀</button>
                     <button type="button" onclick="moveSelectedWords(1)"
                         title="Mover palavra(s) para a direita">▶</button>
-                    <button type="button" id="moveWordUpBtn" onclick="moveSelectedWordsToAdjacentCell(-1)" title="Transferir palavra(s) para a célula acima" style="display:none">⬆️ Célula acima</button>
-                    <button type="button" id="moveWordDownBtn" onclick="moveSelectedWordsToAdjacentCell(1)" title="Transferir palavra(s) para a célula abaixo" style="display:none">⬇️ Célula abaixo</button>
+                    <button type="button" id="moveWordUpBtn" onclick="moveSelectedWordsToAdjacentCell(-1)"
+                        title="Transferir palavra(s) para a célula acima" style="display:none">⬆️ Célula acima</button>
+                    <button type="button" id="moveWordDownBtn" onclick="moveSelectedWordsToAdjacentCell(1)"
+                        title="Transferir palavra(s) para a célula abaixo" style="display:none">⬇️ Célula
+                        abaixo</button>
                     <button type="button" onclick="undoEditor()" id="undoBtn" class="secondary"
                         title="Desfazer (Ctrl+Z)">↶ Desfazer</button>
                     <button type="button" onclick="redoEditor()" id="redoBtn" class="secondary"
@@ -1223,7 +1861,10 @@
                 </div>
             </div>
             <div class="editor-footer">
-                <span style="font-size:12px;color:var(--secondary-color)">Clique numa palavra para selecioná-la. Com uma palavra selecionada, use ⬆️/⬇️ para transferi-la para a célula acima ou abaixo. Use + para nova célula, ↑↓ para reorganizar, ↵ para quebra de linha, 🔗 para mesclar com a próxima célula; × para excluir.</span>
+                <span style="font-size:12px;color:var(--secondary-color)">Clique numa palavra para selecioná-la. Com uma
+                    palavra selecionada, use ⬆️/⬇️ para transferi-la para a célula acima ou abaixo. Use + para nova
+                    célula, ↑↓ para reorganizar, ↵ para quebra de linha, 🔗 para mesclar com a próxima célula; × para
+                    excluir.</span>
                 <button class="success" onclick="saveManualChanges()">✓ Aplicar alterações</button>
             </div>
         </div>
@@ -1266,50 +1907,55 @@
         const topicoIdUrl =
             urlParams.get('topicoId');
 
+        // Aceita o parâmetro principal e os aliases enviados pelo Alumno.
         const textoUrl =
-            urlParams.get('texto');
+            urlParams.get('texto') ||
+            urlParams.get('pesquisa') ||
+            urlParams.get('q') ||
+            '';
 
         const leituraIdParam =
             urlParams.get('id');
         document.addEventListener('DOMContentLoaded', () => {
-            loadVoices();
+            if (typeof atualizarVozesComAtraso === 'function') {
+                atualizarVozesComAtraso();
+            }
+            const initialRawText = document.getElementById('rawText');
+            if (initialRawText) initialRawText.readOnly = false;
             verificarContextoUrl();
             // O guia aparece automaticamente somente na primeira utilização; pode ser reaberto em “Como usar”.
             if (!isFlowGuideDisabled()) setTimeout(() => openFlowGuide(false), 500);
 
-            // Deixar como padrão o percentual de 100%
-            const summaryPercentInput = document.getElementById('summaryPercent');
-            if (summaryPercentInput) {
-                summaryPercentInput.value = "100";
-            }
+            if (textoUrl && textoUrl.trim()) {
 
-            if (leituraIdParam) {
-
-                // Link de uma leitura já salva
-                carregarLeituraFirebasePorUrl(leituraIdParam);
-
-            } else if (textoUrl) {
-
-                // Texto enviado diretamente pelo Alumno
+                // Quando o Alumno envia uma anotação, ela tem prioridade sobre
+                // um id de leitura antigo que possa estar presente na URL.
+                const textoContextual = textoUrl.trim();
                 lastEditorBaseText = '';
                 clearAppliedEditorVersion();
                 rawTextManuallyEditedSinceEditor = true;
-                document.getElementById('rawText').value = textoUrl;
 
-                // Deixa a anotação pronta na Pesquisa rápida, sem executar a busca.
+                const rawText = document.getElementById('rawText');
                 const searchInput = document.getElementById('searchInput');
-                if (searchInput) searchInput.value = textoUrl;
+                if (rawText) rawText.value = textoContextual;
+                if (searchInput) searchInput.value = textoContextual;
 
-                // Atualiza contador
                 updateCounters();
-
-                // Inicia automaticamente a preparação da leitura
                 generateSentences();
+
+            } else if (leituraIdParam) {
+
+                // Sem texto enviado pelo Alumno, carrega a leitura já salva.
+                carregarLeituraFirebasePorUrl(leituraIdParam);
 
             } else {
 
-                // Acesso avulso, sem texto: começa com a caixa de entrada vazia.
+                // Acesso avulso: começa realmente vazio.
+                // Um rascunho antigo não deve reaparecer ao abrir o aplicativo,
+                // pois pode ser texto de um teste anterior. O salvamento automático
+                // continua funcionando durante a edição.
                 document.getElementById('rawText').value = '';
+                clearTextEditDraft();
                 updateCounters();
             }
         });
@@ -1486,7 +2132,7 @@
         function gerarResumo(textoOriginal) {
             const frases = sent_tokenize_browser(textoOriginal.trim());
             const totalFrases = frases.length;
-            const percentual = document.getElementById('summaryPercent')?.value || 100;
+            const percentual = 100;
             let numFrasesDesejadas = Math.max(1, Math.ceil(totalFrases * (percentual / 100)));
             if (totalFrases === 0) return "Texto muito curto.";
 
@@ -1494,60 +2140,499 @@
             return garantirEspacos(textoResumido);
         }
 
+        function normalizarNomeVoz(nome) {
+            return String(nome || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function classificarVozNaturalPtBr(voice) {
+            const nome = normalizarNomeVoz(voice.name);
+            if (/antonio|daniel|felipe|ricardo/.test(nome)) return 'homem';
+            if (/francisca|maria|helena|brenda|camila|female/.test(nome)) return 'mulher';
+            if (/\b(male|man|masculina|homem)\b/.test(nome)) return 'homem';
+            if (/\b(female|woman|feminina|mulher)\b/.test(nome)) return 'mulher';
+            return null;
+        }
+
+        function ehEdge() {
+            return /Edg\//i.test(navigator.userAgent || '');
+        }
+
+        function ehVozNaturalPtBr(voice) {
+            if (!voice) return false;
+            const lang = String(voice.lang || '').replace('_', '-').toLowerCase();
+            if (lang !== 'pt-br') return false;
+            const nome = normalizarNomeVoz(voice.name);
+            const nomeNatural = /antonio|francisca/.test(nome);
+            const marcadorNatural = /natural|neural/.test(nome);
+            const marcadorOnline = /online/.test(nome) && !voice.localService;
+            return nomeNatural && (marcadorNatural || marcadorOnline);
+        }
+
+        function nomeFornecedorVoz(voice) {
+            const nome = normalizarNomeVoz(voice?.name);
+            if (nome.includes('google')) return 'Google';
+            if (nome.includes('microsoft') || nome.includes('online natural') || nome.includes('natural')) return 'Microsoft';
+            return 'Navegador';
+        }
+
         function loadVoices() {
             const allVoices = speechSynthesis.getVoices();
             if (!voiceSelect) return;
-            voiceSelect.innerHTML = "";
-            voices = allVoices.filter(v => v.lang.startsWith('pt-'));
+            voiceSelect.innerHTML = '';
 
-            let defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.textContent = "Automático (Padrão)";
-            voiceSelect.appendChild(defaultOption);
-
-            let antonioIndex = -1;
-
-            voices.forEach((v, i) => {
-                let o = document.createElement("option");
-                o.value = v.name;
-                o.textContent = `${v.name} (${v.lang})`;
-                voiceSelect.appendChild(o);
-
-                // Verifica o nome contendo antonio (ignorando acentos e maiúsculas/minúsculas)
-                const nomeVoz = v.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                if (nomeVoz.includes('antonio') && nomeVoz.includes('natural')) {
-                    antonioIndex = v.name;
-                }
+            // Todas as vozes pt-BR ficam disponíveis. As vozes naturais
+            // (Antônio e Francisca) têm prioridade e aparecem primeiro.
+            const ptBr = allVoices.filter(v => {
+                const lang = String(v.lang || '').replace('_', '-').toLowerCase();
+                return lang === 'pt-br';
             });
 
-            // Se encontrou a voz do Antônio, define ela como selecionada por padrão
-            if (antonioIndex !== -1) {
-                selectedVoice = voices.find(v => v.name === antonioIndex);
-                voiceSelect.value = antonioIndex;
-            } else if (voices.length > 0) {
-                selectedVoice = voices[0];
-                voiceSelect.value = voices[0].name;
+            const naturaisPtBr = ptBr.filter(ehVozNaturalPtBr);
+            const outrasPtBr = ptBr.filter(v => !ehVozNaturalPtBr(v));
+
+            const homemNatural = naturaisPtBr.find(v => /antonio/.test(normalizarNomeVoz(v.name)));
+            const mulherNatural = naturaisPtBr.find(v => /francisca/.test(normalizarNomeVoz(v.name)));
+
+            // Primeiro as duas vozes naturais preferenciais; depois as demais
+            // vozes pt-BR encontradas no navegador (incluindo as do Google).
+            const preferenciais = [homemNatural, mulherNatural].filter(Boolean);
+            const restantesNaturais = naturaisPtBr.filter(v => !preferenciais.includes(v));
+            voices = [...preferenciais, ...restantesNaturais, ...outrasPtBr];
+
+            if (!voices.length) {
+                const aviso = document.createElement('option');
+                aviso.value = '';
+                aviso.textContent = 'Nenhuma voz pt-BR disponível neste navegador';
+                voiceSelect.appendChild(aviso);
+                selectedVoice = null;
+                return;
             }
+
+            voices.forEach((v, index) => {
+                const natural = ehVozNaturalPtBr(v);
+                const genero = classificarVozNaturalPtBr(v);
+                const fornecedor = nomeFornecedorVoz(v);
+                const o = document.createElement('option');
+                o.value = v.name;
+
+                let prefixo = natural ? '★ Natural' : fornecedor === 'Google' ? 'Google' : 'Outras';
+                let descricao = v.name;
+                if (genero === 'homem' && /antonio/.test(normalizarNomeVoz(v.name))) descricao = `Antônio — ${v.name}`;
+                else if (genero === 'mulher' && /francisca/.test(normalizarNomeVoz(v.name))) descricao = `Francisca — ${v.name}`;
+                o.textContent = `${prefixo} — ${descricao}`;
+                voiceSelect.appendChild(o);
+            });
+
+            // Voz natural é sempre a preferência quando existe; Antônio vem
+            // primeiro e Francisca fica logo em seguida.
+            selectedVoice = homemNatural || mulherNatural || voices[0];
+            voiceSelect.value = selectedVoice.name;
         }
         speechSynthesis.onvoiceschanged = loadVoices;
         voiceSelect.addEventListener("change", () => {
             const nomeSelecionado = voiceSelect.value;
-            selectedVoice = nomeSelecionado === "" ? null : voices.find(v => v.name === nomeSelecionado);
+            selectedVoice = nomeSelecionado ? voices.find(v => v.name === nomeSelecionado) || null : null;
+            if (speechSynthesis.speaking || speechSynthesis.paused) { speechSynthesis.cancel(); setPlayPauseIcon(false); }
         });
 
-        function generateSentences() {
-            stopReading();
-            const text = rawTextArea.value;
-            if (!text.trim()) {
-                alert("Cole ou digite um texto antes de resumir.");
+        // =======================================================
+        // EDIÇÃO RÁPIDA DO TEXTO DE ENTRADA
+        // =======================================================
+        const TEXT_EDIT_DRAFT_PREFIX = 'leitura_guiada_text_edit_draft_v1_';
+        let textEditMode = false;
+        let textEditUndoStack = [];
+        const MAX_TEXT_EDIT_UNDO = 50;
+
+        function resetTextEditUndo() {
+            textEditUndoStack = [];
+            updateTextEditUndoButton();
+        }
+
+        function pushTextEditUndoState() {
+            const current = rawTextArea.value || '';
+            if (textEditUndoStack.length && textEditUndoStack[textEditUndoStack.length - 1].value === current) return;
+            textEditUndoStack.push({
+                value: current,
+                start: rawTextArea.selectionStart ?? current.length,
+                end: rawTextArea.selectionEnd ?? current.length
+            });
+            if (textEditUndoStack.length > MAX_TEXT_EDIT_UNDO) textEditUndoStack.shift();
+            updateTextEditUndoButton();
+        }
+
+        function updateTextEditUndoButton() {
+            const btn = document.getElementById('undoTextEditBtn');
+            if (btn) btn.disabled = textEditUndoStack.length === 0;
+        }
+
+        function undoTextEdit() {
+            if (!textEditMode || !textEditUndoStack.length) return;
+            const previous = textEditUndoStack.pop();
+            rawTextArea.value = previous.value;
+            const pos = Math.min(previous.start, rawTextArea.value.length);
+            rawTextArea.focus({ preventScroll: true });
+            rawTextArea.setSelectionRange(pos, pos);
+            handleRawTextInput();
+            updateTextEditUndoButton();
+        }
+
+        function keepEditCursorVisible(position) {
+            rawTextArea.focus({ preventScroll: true });
+            const pos = Math.max(0, Math.min(position, rawTextArea.value.length));
+            rawTextArea.setSelectionRange(pos, pos);
+        }
+
+        function getTextEditDraftKey() {
+            const context = [userIdUrl || 'local', topicoIdUrl || 'sem-topico', leituraIdAtual || 'nova']
+                .map(v => String(v).replace(/[^a-zA-Z0-9_-]/g, '_'))
+                .join('_');
+            return TEXT_EDIT_DRAFT_PREFIX + context;
+        }
+
+        function saveTextEditDraft() {
+            try {
+                localStorage.setItem(getTextEditDraftKey(), rawTextArea.value || '');
+                localStorage.setItem(getTextEditDraftKey() + '_updated', String(Date.now()));
+            } catch (_) { }
+        }
+
+        function restoreTextEditDraft() {
+            try {
+                const saved = localStorage.getItem(getTextEditDraftKey());
+                if (saved && !rawTextArea.value.trim()) {
+                    rawTextArea.value = saved;
+                    updateCounters();
+                }
+            } catch (_) { }
+        }
+
+        function clearTextEditDraft() {
+            try {
+                localStorage.removeItem(getTextEditDraftKey());
+                localStorage.removeItem(getTextEditDraftKey() + '_updated');
+            } catch (_) { }
+        }
+
+        function toggleTextEditMode(force) {
+            textEditMode = typeof force === 'boolean' ? force : !textEditMode;
+
+            // Ao iniciar a edição, a caixa volta a aceitar digitação normalmente,
+            // permitindo que o teclado seja ativado e o cursor fique visível.
+            rawTextArea.readOnly = false;
+            rawTextArea.classList.toggle('editing-mode', textEditMode);
+            rawTextArea.setAttribute('aria-expanded', textEditMode ? 'true' : 'false');
+
+            const btn = document.getElementById('editTextBtn');
+            const actions = document.getElementById('textEditActions');
+            const status = document.getElementById('textEditStatus');
+
+            if (btn) btn.textContent = textEditMode ? '✓ Editando' : '✏️ Editar';
+            if (actions) actions.style.display = textEditMode ? 'flex' : 'none';
+            if (status) status.textContent = textEditMode
+                ? 'Modo edição: selecione o ponto e use “Inserir quebra de linha”.'
+                : 'Edite apenas quando precisar inserir quebras de linha.';
+
+            if (textEditMode) {
+                // Foco imediato para mostrar o cursor e permitir a abertura do teclado.
+                resetTextEditUndo();
+                const pos = rawTextArea.selectionStart ?? rawTextArea.value.length;
+                requestAnimationFrame(() => keepEditCursorVisible(pos));
+            } else {
+                rawTextArea.blur();
+                saveTextEditDraft();
+            }
+        }
+
+        function insertTextLineBreak() {
+            if (!textEditMode) toggleTextEditMode(true);
+            const start = rawTextArea.selectionStart ?? rawTextArea.value.length;
+            const end = rawTextArea.selectionEnd ?? start;
+            const value = rawTextArea.value;
+            pushTextEditUndoState();
+            rawTextArea.value = value.slice(0, start) + '\n' + value.slice(end);
+            const cursor = start + 1;
+            rawTextArea.selectionStart = cursor;
+            rawTextArea.selectionEnd = cursor;
+            handleRawTextInput();
+            // Mantém o ponto de edição visível.
+            keepEditCursorVisible(cursor);
+        }
+
+        // Converte o texto editado diretamente em páginas de leitura.
+        // Cada quebra de linha inserida pelo usuário define o início de uma nova página.
+        function buildReadingPagesFromEditedText(text) {
+            return String(text || '')
+                .replace(/\r\n/g, '\n')
+                .replace(/\r/g, '\n')
+                .split(/\n+/)
+                .map(p => p.trim())
+                .filter(Boolean);
+        }
+
+        function syncReadingPagesFromEditedText(preserveIndex = true) {
+            const pages = buildReadingPagesFromEditedText(rawTextArea.value);
+            if (!pages.length) return false;
+
+            const previousIndex = currentIndex;
+            sentences = pages;
+            currentIndex = preserveIndex
+                ? Math.min(previousIndex, sentences.length - 1)
+                : 0;
+            showCurrent();
+            return true;
+        }
+
+        function handleRawTextInput() {
+            updateCounters();
+            saveTextEditDraft();
+
+            // Durante a edição, o leitor acompanha imediatamente o mesmo texto
+            // e as mesmas quebras que estão na caixa de texto.
+            if (textEditMode && sentences.length) {
+                syncReadingPagesFromEditedText(true);
+            }
+        }
+
+        function generateLinkTitleFromText(text) {
+            const words = String(text || '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .split(' ')
+                .filter(Boolean);
+            return words.slice(0, 7).join(' ') || 'Leitura Guiada';
+        }
+
+        function updateLinkTitleFromText(text) {
+            const input = document.getElementById('rotuloLinkInput');
+            if (!input) return;
+            const title = generateLinkTitleFromText(text);
+            input.value = title;
+        }
+
+        // Organiza automaticamente textos colados de páginas da web.
+        // A função não resume nem reescreve o conteúdo: apenas reconstrói
+        // a estrutura que normalmente se perde ao copiar de uma página web.
+        function organizeRawText() {
+            const source = (rawTextArea.value || '').trim();
+            if (!source) {
+                alert('Cole um texto antes de organizar.');
                 return;
             }
-            const resumoText = gerarResumo(text);
-            sentences = resumoText.split(/\n\s*\n/).flatMap(p => sent_tokenize_browser(p))
-                .map(s => garantirEspacos(s)).filter(Boolean);
+
+            let text = source
+                .replace(/\r\n?/g, '\n')
+                .replace(/\u00a0/g, ' ')
+                .replace(/[ \t]+/g, ' ')
+                .replace(/[ \t]*\n[ \t]*/g, '\n')
+                .trim();
+
+            const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const normalize = value => String(value || '')
+                .toLowerCase()
+                .replace(/\[[^\]]*\]/g, '')
+                .replace(/^[•▪◦●○\-–—]+\s*/, '')
+                .replace(/[^a-záàâãéêíóôõúç0-9 ]/gi, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            const headings = [
+                'Constituição Promulgada (ou Democrática)', 'Constituição Outorgada (ou Autoritária)',
+                'Constituição Promulgada', 'Constituição Outorgada',
+                'Figuras de Palavras ou Semânticas (Sentido)', 'Figuras de Pensamento (Ideias)',
+                'Figuras de Sintaxe ou Construção (Estrutura)', 'Figuras de Som ou Harmonia (Sonoridade)',
+                'Principais Características', 'Características Principais', 'Como funciona',
+                'Exemplos práticos', 'Principais características', 'Características',
+                'Definição', 'Origem', 'Exemplos no Brasil', 'Exemplos', 'Conclusão',
+                'Resumo', 'Importante', 'Observação', 'Diferenças', 'Vantagens', 'Desvantagens'
+            ].sort((a, b) => b.length - a.length);
+
+            const headingAlternation = headings.map(escapeRegExp).join('|');
+
+            // Quebras estruturais perdidas na cópia da web.
+            text = text.replace(/\s*[•▪◦●○]\s*/g, '\n• ');
+            text = text.replace(/\s+(?=\d+\.\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ])/g, '\n');
+            text = text.replace(new RegExp('\\s+(?=(' + headingAlternation + '))', 'giu'), '\n');
+            text = text.replace(new RegExp('(' + headingAlternation + ')\\s*:', 'giu'), '\n$1:\n');
+
+            let lines = text.split('\n')
+                .map(line => line.replace(/\s+/g, ' ').trim())
+                .filter(Boolean);
+
+            // Remove referências repetidas e normaliza itens.
+            lines = lines.map(line => line.replace(/\s*\[[^\]]+\]/g, m => m.trim()).trim());
+
+            // Identifica os itens de lista. Eles são a fonte mais confiável quando
+            // a página copiada trouxe primeiro o texto corrido e depois a lista.
+            const bullets = lines.filter(line => /^•\s*/.test(line));
+            const bulletNorms = bullets.map(b => normalize(b)).filter(Boolean);
+
+            // Remove da parte corrida trechos que reaparecem como itens de lista.
+            // Ex.: "Metáfora: ... [1] • Metáfora: ... [1]" -> fica apenas o item.
+            if (bulletNorms.length) {
+                for (let i = 0; i < lines.length; i++) {
+                    if (/^•\s*/.test(lines[i])) continue;
+                    let line = lines[i];
+                    for (const bn of bulletNorms) {
+                        if (bn.length < 18) continue;
+                        const words = bn.split(' ');
+                        // Usa blocos de 8+ palavras para evitar apagar frases curtas legítimas.
+                        const chunk = words.slice(0, Math.min(words.length, Math.max(8, Math.min(18, words.length))));
+                        if (chunk.length < 8) continue;
+                        const patternText = chunk.map(escapeRegExp).join('\\s+');
+                        const re = new RegExp('(?:^|[.!?;:]\\s*)' + patternText + '[^.!?]*(?=(?:[.!?]|$))', 'iu');
+                        line = line.replace(re, '').replace(/\s{2,}/g, ' ').trim();
+                    }
+                    lines[i] = line;
+                }
+            }
+
+            // Elimina linhas corridas que são essencialmente a mesma informação de um item.
+            const cleaned = [];
+            for (const line of lines) {
+                const n = normalize(line);
+                if (!n) continue;
+                const isBullet = /^•\s*/.test(line);
+                if (!isBullet && bulletNorms.some(bn => bn.length >= 20 && (n === bn || n.includes(bn) || bn.includes(n)))) {
+                    // Se houver uma parte introdutória antes do conteúdo repetido,
+                    // conserva apenas essa parte.
+                    let remainder = line;
+                    for (const bn of bulletNorms) {
+                        if (bn.length < 20) continue;
+                        const words = bn.split(' ');
+                        const chunk = words.slice(0, Math.min(words.length, Math.max(8, Math.min(18, words.length))));
+                        if (chunk.length < 8) continue;
+                        const re = new RegExp(chunk.map(escapeRegExp).join('\\s+'), 'iu');
+                        remainder = remainder.replace(re, ' ').replace(/\s{2,}/g, ' ').trim();
+                    }
+                    if (!normalize(remainder)) continue;
+                    cleaned.push(remainder);
+                } else {
+                    cleaned.push(line);
+                }
+            }
+            lines = cleaned;
+
+            // Deduplicação global dos itens: mantém a primeira ocorrência de cada item.
+            const seenBullets = new Set();
+            lines = lines.filter(line => {
+                if (!/^•\s*/.test(line)) return true;
+                const n = normalize(line);
+                if (seenBullets.has(n)) return false;
+                seenBullets.add(n);
+                return true;
+            });
+
+            // Títulos repetidos em sequência ou na mesma linha.
+            lines = lines.map(line => {
+                let out = line;
+                for (const h of headings) {
+                    const hWords = h.split(/\s+/).map(escapeRegExp).join('\\s+');
+                    out = out.replace(new RegExp('(' + hWords + ')(?:\\s*:\\s*|\\s+)\\1(?=\\s|:|$)', 'iu'), '$1');
+                }
+                return out.replace(/\s+/g, ' ').trim();
+            }).filter(Boolean);
+
+            const mainHeading = /^(Constituição\s+(?:Outorgada|Promulgada)(?:\s*\([^)]*\))?)$/iu;
+            const numberedHeading = /^\d+\.\s+.+$/u;
+            const sectionHeading = /^(Figuras de Palavras ou Semânticas \(Sentido\)|Figuras de Pensamento \(Ideias\)|Figuras de Sintaxe ou Construção \(Estrutura\)|Figuras de Som ou Harmonia \(Sonoridade\)|Principais Características|Características Principais|Como funciona|Exemplos práticos|Características|Definição|Origem|Exemplos(?: no Brasil)?|Conclusão|Resumo|Importante|Observação|Diferenças|Vantagens|Desvantagens):?$/iu;
+
+            const result = [];
+            let previousNorm = '';
+            for (const line of lines) {
+                const n = normalize(line);
+                if (!n || n === previousNorm) continue;
+                previousNorm = n;
+
+                if (mainHeading.test(line)) {
+                    result.push('', line.toUpperCase(), '');
+                    continue;
+                }
+
+                // Mantém títulos numerados como "1. Figuras de..." em linha própria.
+                if (numberedHeading.test(line) && line.length < 90) {
+                    result.push('', line, '');
+                    continue;
+                }
+
+                if (sectionHeading.test(line)) {
+                    result.push('', line.replace(/:$/, '').toUpperCase() + ':', '');
+                    continue;
+                }
+
+                result.push(line);
+            }
+
+            const organized = result.join('\n')
+                .replace(/\n{3,}/g, '\n\n')
+                .replace(/\n +/g, '\n')
+                .trim();
+
+            if (!organized) {
+                alert('Não foi possível organizar este texto.');
+                return;
+            }
+
+            // Mesmo quando o texto já possui as quebras estruturais na caixa,
+            // a ação ORGANIZAR deve reconstruir a leitura usando essas quebras.
+            // Antes, a função encerrava aqui e deixava o leitor em 1 único parágrafo.
+            const changed = organized !== source;
+            rawTextArea.value = organized;
+            markRawTextAsNewContent();
+            handleRawTextInput();
+            updateCounters();
+            saveTextEditDraft();
+
+            sentences = buildReadingPagesFromEditedText(organized);
+
+            // Se ainda houver poucas quebras, aproveita também marcadores e
+            // seções numeradas para criar páginas de leitura úteis.
+            if (sentences.length <= 1) {
+                const fallbackPages = organized
+                    .replace(/\s+•\s+/g, '\n• ')
+                    .replace(/\s+(?=\d+\.\s+)/g, '\n')
+                    .split(/\n+/)
+                    .map(p => p.trim())
+                    .filter(Boolean);
+                if (fallbackPages.length > 1) sentences = fallbackPages;
+            }
+
             currentIndex = 0;
             showCurrent();
             updateCounters();
+            updateLinkTitleFromText(organized);
+
+            if (textEditMode) rawTextArea.blur();
+        }
+
+        function generateSentences() {
+            stopReading();
+            const text = (rawTextArea.value || '').trim();
+
+            if (!text) {
+                alert("Cole ou digite um texto antes de resumir.");
+                return;
+            }
+
+            // A leitura usa exatamente o texto resultante da edição.
+            // Cada quebra de linha representa uma nova página/parágrafo.
+            sentences = buildReadingPagesFromEditedText(text);
+
+            if (!sentences.length) {
+                sentences = [text];
+            }
+
+            currentIndex = 0;
+            showCurrent();
+            updateCounters();
+
+            // O botão de preparar a leitura encerra o modo de edição,
+            // libera o teclado novamente e define o nome pelas sete primeiras palavras.
+            toggleTextEditMode(false);
+            rawTextArea.readOnly = false;
+            updateLinkTitleFromText(text);
+            clearTextEditDraft();
+            resetTextEditUndo();
+            exitReaderReadingMode();
         }
 
         function clearRawText() {
@@ -1556,6 +2641,9 @@
             clearAppliedEditorVersion();
             rawTextManuallyEditedSinceEditor = true;
             rawTextArea.value = "";
+            clearTextEditDraft();
+            resetTextEditUndo();
+            toggleTextEditMode(false);
             sentences = [];
             currentIndex = 0;
             output.textContent = "Texto apagado.";
@@ -1570,73 +2658,73 @@
         const FLOW_GUIDE_KEY = 'flowread_guide_disabled_v1';
         let flowGuideIndex = 0;
         const flowGuideSteps = [
-            {target:'#searchInput', title:'1. Comece pela pesquisa', text:'Digite o conceito, palavra ou assunto que deseja estudar. A busca será feita diretamente no Google.', tip:'Prefira procurar uma explicação clara e objetiva para o que você quer compreender.'},
-            {target:'#googleSearchBtn', title:'2. Use o Google e, de preferência, a AI Overview', text:'Clique em “Ver resultados do Google”. Dê preferência à resposta gerada pela IA do Google, a AI Overview (Visão geral da IA), quando ela estiver disponível e trouxer uma explicação adequada.', tip:'A AI Overview pode servir como ponto de partida. Se necessário, também abra uma página dos resultados para complementar a informação.'},
-            {target:'#rawText', title:'3. Traga apenas o que interessa', text:'Copie o trecho escolhido no Google, feche a tela da busca e volte para a Leitura Guiada. Cole o texto na caixa de texto.', tip:'Quanto mais objetivo for o trecho, melhor será o material de leitura.'},
-            {target:'#manualEditorBtn', title:'4. Apare e organize', text:'Use “Aparar e organizar” para retirar links, ruídos, chamadas e partes que não fazem parte do conteúdo que você quer estudar.', tip:'O editor permite selecionar palavras, recortar, apagar, mover e organizar o texto, inclusive transferir palavras para a célula acima ou abaixo.'},
-            {target:'#generateBtn', title:'5. Prepare a leitura', text:'Clique em “Resumir e iniciar leitura”. O texto é dividido em frases e preparado para a leitura guiada conforme a proporção escolhida.', tip:'O padrão atual é 100% das frases.'},
-            {target:'#rotuloLinkInput', title:'6. Dê um nome ao texto', text:'Use um título curto e identificável, de preferência retirado do próprio assunto do texto que você acabou de preparar.', tip:'Um bom título facilita encontrar e reconhecer essa leitura depois.'},
-            {target:'#saveLinkBtn', title:'7. Salve no Alumno', text:'Salve a leitura para criar o vínculo com o conteúdo do Alumno. Depois você poderá reabrir para editar ou simplesmente ler e reler.', tip:'As releituras e o registro de trechos podem participar do ciclo de aprendizagem do Alumno.'}
+            { target: '#searchInput', title: '1. Comece pela pesquisa', text: 'Digite o conceito, palavra ou assunto que deseja estudar. A busca será feita diretamente no Google.', tip: 'Prefira procurar uma explicação clara e objetiva para o que você quer compreender.' },
+            { target: '#googleSearchBtn', title: '2. Use o Google e, de preferência, a AI Overview', text: 'Clique em “Ver resultados do Google”. Dê preferência à resposta gerada pela IA do Google, a AI Overview (Visão geral da IA), quando ela estiver disponível e trouxer uma explicação adequada.', tip: 'A AI Overview pode servir como ponto de partida. Se necessário, também abra uma página dos resultados para complementar a informação.' },
+            { target: '#rawText', title: '3. Traga apenas o que interessa', text: 'Copie o trecho escolhido no Google, feche a tela da busca e volte para a Leitura Guiada. Cole o texto na caixa de texto.', tip: 'Quanto mais objetivo for o trecho, melhor será o material de leitura.' },
+            { target: '#manualEditorBtn', title: '4. Apare e organize', text: 'Use “Aparar e organizar” para retirar links, ruídos, chamadas e partes que não fazem parte do conteúdo que você quer estudar.', tip: 'O editor permite selecionar palavras, recortar, apagar, mover e organizar o texto, inclusive transferir palavras para a célula acima ou abaixo.' },
+            { target: '#generateBtn', title: '5. Prepare a leitura', text: 'Clique em “Resumir e iniciar leitura”. O texto é dividido em frases e preparado para a leitura guiada conforme a proporção escolhida.', tip: 'O padrão atual é 100% das frases.' },
+            { target: '#rotuloLinkInput', title: '6. Dê um nome ao texto', text: 'Use um título curto e identificável, de preferência retirado do próprio assunto do texto que você acabou de preparar.', tip: 'Um bom título facilita encontrar e reconhecer essa leitura depois.' },
+            { target: '#saveLinkBtn', title: '7. Salve no Alumno', text: 'Salve a leitura para criar o vínculo com o conteúdo do Alumno. Depois você poderá reabrir para editar ou simplesmente ler e reler.', tip: 'As releituras e o registro de trechos podem participar do ciclo de aprendizagem do Alumno.' }
         ];
 
-        function isFlowGuideDisabled(){
-            try { return localStorage.getItem(FLOW_GUIDE_KEY)==='1'; } catch(_) { return false; }
+        function isFlowGuideDisabled() {
+            try { return localStorage.getItem(FLOW_GUIDE_KEY) === '1'; } catch (_) { return false; }
         }
-        function setFlowGuideDisabled(v){
-            try { localStorage.setItem(FLOW_GUIDE_KEY, v?'1':'0'); } catch(_) {}
+        function setFlowGuideDisabled(v) {
+            try { localStorage.setItem(FLOW_GUIDE_KEY, v ? '1' : '0'); } catch (_) { }
         }
-        function clearFlowGuideTarget(){
-            document.querySelectorAll('.flow-guide-target').forEach(el=>el.classList.remove('flow-guide-target'));
+        function clearFlowGuideTarget() {
+            document.querySelectorAll('.flow-guide-target').forEach(el => el.classList.remove('flow-guide-target'));
         }
-        function renderFlowGuide(){
-            const step=flowGuideSteps[flowGuideIndex];
-            const progress=document.getElementById('flowGuideProgress');
-            const stepEl=document.getElementById('flowGuideStep');
-            const tip=document.getElementById('flowGuideTip');
-            const back=document.getElementById('flowGuideBackBtn');
-            const next=document.getElementById('flowGuideNextBtn');
-            if(!step||!progress||!stepEl||!tip) return;
-            progress.innerHTML=flowGuideSteps.map((_,i)=>`<span class="${i<=flowGuideIndex?'active':''}"></span>`).join('');
-            stepEl.innerHTML=`<div class="flow-guide-step-num">${flowGuideIndex+1}</div><div><strong>${escapeHtml(step.title)}</strong><span>${escapeHtml(step.text)}</span></div>`;
-            tip.innerHTML=`<strong>💡</strong> ${escapeHtml(step.tip)}`;
-            if(back) back.style.visibility=flowGuideIndex>0?'visible':'hidden';
-            if(next) next.textContent=flowGuideIndex===flowGuideSteps.length-1?'Concluir ✓':'Avançar →';
+        function renderFlowGuide() {
+            const step = flowGuideSteps[flowGuideIndex];
+            const progress = document.getElementById('flowGuideProgress');
+            const stepEl = document.getElementById('flowGuideStep');
+            const tip = document.getElementById('flowGuideTip');
+            const back = document.getElementById('flowGuideBackBtn');
+            const next = document.getElementById('flowGuideNextBtn');
+            if (!step || !progress || !stepEl || !tip) return;
+            progress.innerHTML = flowGuideSteps.map((_, i) => `<span class="${i <= flowGuideIndex ? 'active' : ''}"></span>`).join('');
+            stepEl.innerHTML = `<div class="flow-guide-step-num">${flowGuideIndex + 1}</div><div><strong>${escapeHtml(step.title)}</strong><span>${escapeHtml(step.text)}</span></div>`;
+            tip.innerHTML = `<strong>💡</strong> ${escapeHtml(step.tip)}`;
+            if (back) back.style.visibility = flowGuideIndex > 0 ? 'visible' : 'hidden';
+            if (next) next.textContent = flowGuideIndex === flowGuideSteps.length - 1 ? 'Concluir ✓' : 'Avançar →';
             clearFlowGuideTarget();
-            const target=document.querySelector(step.target);
-            if(target) target.classList.add('flow-guide-target');
+            const target = document.querySelector(step.target);
+            if (target) target.classList.add('flow-guide-target');
         }
-        function openFlowGuide(force=true){
-            const overlay=document.getElementById('flowGuideOverlay');
-            if(!overlay) return;
-            if(!force && isFlowGuideDisabled()) return;
-            flowGuideIndex=0;
-            const check=document.getElementById('flowGuideDisable');
-            if(check) check.checked=isFlowGuideDisabled();
+        function openFlowGuide(force = true) {
+            const overlay = document.getElementById('flowGuideOverlay');
+            if (!overlay) return;
+            if (!force && isFlowGuideDisabled()) return;
+            flowGuideIndex = 0;
+            const check = document.getElementById('flowGuideDisable');
+            if (check) check.checked = isFlowGuideDisabled();
             overlay.classList.add('active');
-            overlay.setAttribute('aria-hidden','false');
+            overlay.setAttribute('aria-hidden', 'false');
             renderFlowGuide();
         }
-        function closeFlowGuide(){
-            const check=document.getElementById('flowGuideDisable');
-            if(check?.checked) setFlowGuideDisabled(true);
+        function closeFlowGuide() {
+            const check = document.getElementById('flowGuideDisable');
+            if (check?.checked) setFlowGuideDisabled(true);
             clearFlowGuideTarget();
-            const overlay=document.getElementById('flowGuideOverlay');
-            if(overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); }
+            const overlay = document.getElementById('flowGuideOverlay');
+            if (overlay) { overlay.classList.remove('active'); overlay.setAttribute('aria-hidden', 'true'); }
         }
-        function flowGuideNext(){
-            if(flowGuideIndex>=flowGuideSteps.length-1){ closeFlowGuide(); return; }
+        function flowGuideNext() {
+            if (flowGuideIndex >= flowGuideSteps.length - 1) { closeFlowGuide(); return; }
             flowGuideIndex++;
             renderFlowGuide();
         }
-        function flowGuideBack(){
-            if(flowGuideIndex<=0) return;
+        function flowGuideBack() {
+            if (flowGuideIndex <= 0) return;
             flowGuideIndex--;
             renderFlowGuide();
         }
-        window.openFlowGuide=openFlowGuide;
-        window.closeFlowGuide=closeFlowGuide;
-        window.flowGuideNext=flowGuideNext;
-        window.flowGuideBack=flowGuideBack;
+        window.openFlowGuide = openFlowGuide;
+        window.closeFlowGuide = closeFlowGuide;
+        window.flowGuideNext = flowGuideNext;
+        window.flowGuideBack = flowGuideBack;
 
         // Funções de Área de Transferência
 
@@ -1650,40 +2738,40 @@
         };
         const functionGuideData = {
             google: {
-                icon:'🌐',
-                title:'Como usar a pesquisa no Google',
-                step:'Digite o assunto e clique em “Ver resultados do Google”. Sempre que estiver disponível e for adequada ao assunto, prefira a resposta gerada pela IA do Google, a AI Overview (Visão geral da IA), como ponto de partida para o seu estudo.',
-                tip:'Na AI Overview ou em uma página dos resultados, selecione com o mouse somente o trecho que quer estudar e copie com Ctrl+C. Depois feche a tela do Google.',
-                next:'Entendi, abrir Google'
+                icon: '🌐',
+                title: 'Como usar a pesquisa no Google',
+                step: 'Digite o assunto e clique em “Ver resultados do Google”. Sempre que estiver disponível e for adequada ao assunto, prefira a resposta gerada pela IA do Google, a AI Overview (Visão geral da IA), como ponto de partida para o seu estudo.',
+                tip: 'Na AI Overview ou em uma página dos resultados, selecione com o mouse somente o trecho que quer estudar e copie com Ctrl+C. Depois feche a tela do Google.',
+                next: 'Entendi, abrir Google'
             },
             trim: {
-                icon:'✂️',
-                title:'Como usar Aparar e organizar',
-                step:'Cole o texto na caixa de entrada e abra “Aparar e organizar”. O editor ajuda a retirar links e ruídos e permite apagar, mover palavras dentro da célula, transferir palavras para a célula acima ou abaixo, criar quebras de linha e mesclar células.',
-                tip:'Para transferir uma palavra, selecione-a e use ⬆️ Célula acima ou ⬇️ Célula abaixo. Para juntar células, clique no botão 🔗 da primeira célula; ela será mesclada diretamente com a próxima célula abaixo. Ao terminar, clique em “Aplicar alterações”.',
-                next:'Abrir editor'
+                icon: '✂️',
+                title: 'Como usar Aparar e organizar',
+                step: 'Cole o texto na caixa de entrada e abra “Aparar e organizar”. O editor ajuda a retirar links e ruídos e permite apagar, mover palavras dentro da célula, transferir palavras para a célula acima ou abaixo, criar quebras de linha e mesclar células.',
+                tip: 'Para transferir uma palavra, selecione-a e use ⬆️ Célula acima ou ⬇️ Célula abaixo. Para juntar células, clique no botão 🔗 da primeira célula; ela será mesclada diretamente com a próxima célula abaixo. Ao terminar, clique em “Aplicar alterações”.',
+                next: 'Abrir editor'
             },
             save: {
-                icon:'💾',
-                title:'Como salvar no Alumno',
-                step:'Depois de preparar a leitura, dê um título curto e identificável ao texto. De preferência, use o assunto principal ou uma expressão retirada do próprio texto.',
-                tip:'Clique em “Salvar e enviar para o Alumno”. A leitura ficará vinculada ao conteúdo atual e poderá ser reaberta para edição ou apenas para leitura e releitura.',
-                next:'Continuar para salvar'
+                icon: '💾',
+                title: 'Como salvar no Alumno',
+                step: 'Depois de preparar a leitura, dê um título curto e identificável ao texto. De preferência, use o assunto principal ou uma expressão retirada do próprio texto.',
+                tip: 'Clique em “Salvar e enviar para o Alumno”. A leitura ficará vinculada ao conteúdo atual e poderá ser reaberta para edição ou apenas para leitura e releitura.',
+                next: 'Continuar para salvar'
             }
         };
         let activeFunctionGuide = null;
         let activeFunctionGuideAction = false;
 
-        function isFunctionGuideDisabled(type){
-            try { return localStorage.getItem(FUNCTION_GUIDE_KEYS[type]) === '1'; } catch(_) { return false; }
+        function isFunctionGuideDisabled(type) {
+            try { return localStorage.getItem(FUNCTION_GUIDE_KEYS[type]) === '1'; } catch (_) { return false; }
         }
-        function setFunctionGuideDisabled(type, value){
-            try { localStorage.setItem(FUNCTION_GUIDE_KEYS[type], value ? '1' : '0'); } catch(_) {}
+        function setFunctionGuideDisabled(type, value) {
+            try { localStorage.setItem(FUNCTION_GUIDE_KEYS[type], value ? '1' : '0'); } catch (_) { }
         }
-        function openFunctionGuide(type, action=false){
+        function openFunctionGuide(type, action = false) {
             const data = functionGuideData[type];
             const overlay = document.getElementById('functionGuideOverlay');
-            if(!data || !overlay) return;
+            if (!data || !overlay) return;
             activeFunctionGuide = type;
             activeFunctionGuideAction = action === 'action' || action === true;
             document.getElementById('functionGuideIcon').textContent = data.icon;
@@ -1692,34 +2780,34 @@
                 `<div class="function-guide-step"><div class="function-guide-num">1</div><div><strong>${escapeHtml(data.title)}</strong><span>${escapeHtml(data.step)}</span></div></div>`;
             document.getElementById('functionGuideTip').innerHTML = `<strong>💡</strong> ${escapeHtml(data.tip)}`;
             const check = document.getElementById('functionGuideDisable');
-            if(check) check.checked = isFunctionGuideDisabled(type);
+            if (check) check.checked = isFunctionGuideDisabled(type);
             const cont = document.getElementById('functionGuideContinue');
-            if(cont) cont.textContent = data.next;
+            if (cont) cont.textContent = data.next;
             overlay.classList.add('active');
-            overlay.setAttribute('aria-hidden','false');
+            overlay.setAttribute('aria-hidden', 'false');
         }
-        function closeFunctionGuide(){
+        function closeFunctionGuide() {
             const check = document.getElementById('functionGuideDisable');
-            if(activeFunctionGuide && check?.checked) setFunctionGuideDisabled(activeFunctionGuide, true);
+            if (activeFunctionGuide && check?.checked) setFunctionGuideDisabled(activeFunctionGuide, true);
             const overlay = document.getElementById('functionGuideOverlay');
-            if(overlay){
+            if (overlay) {
                 overlay.classList.remove('active');
-                overlay.setAttribute('aria-hidden','true');
+                overlay.setAttribute('aria-hidden', 'true');
             }
             activeFunctionGuide = null;
             activeFunctionGuideAction = false;
         }
-        function continueFunctionGuide(){
+        function continueFunctionGuide() {
             const type = activeFunctionGuide;
             const action = activeFunctionGuideAction;
             const check = document.getElementById('functionGuideDisable');
-            if(type && check?.checked) setFunctionGuideDisabled(type, true);
+            if (type && check?.checked) setFunctionGuideDisabled(type, true);
             closeFunctionGuide();
-            if(!type || !action) return;
+            if (!type || !action) return;
 
-            if(type === 'google') searchGoogleCore();
-            else if(type === 'trim') openManualEditor();
-            else if(type === 'save') salvarVinculoFirebase();
+            if (type === 'google') searchGoogleCore();
+            else if (type === 'trim') openManualEditor();
+            else if (type === 'save') salvarVinculoFirebase();
         }
 
         function handleGuideEnter(event) {
@@ -1840,61 +2928,164 @@
 
 
         let googleSearchUrlAtual = "";
+        // Fluxo Google -> copiar -> Voltar:
+        // o marcador só existe enquanto uma pesquisa iniciada pela Leitura Guiada
+        // estiver aguardando o texto copiado.
+        let googleAwaitingClipboardPaste = false;
+        try {
+            googleAwaitingClipboardPaste =
+                sessionStorage.getItem('googleAwaitingClipboardPaste') === '1';
+        } catch (e) { }
 
-
-        function handleGoogleAction(){
+        function handleGoogleAction() {
             searchGoogleCore();
+        }
+
+        let googleClipboardRetryTimer = null;
+        let googleClipboardRetryCount = 0;
+
+        function limparPendenciaGoogle() {
+            googleAwaitingClipboardPaste = false;
+            try {
+                sessionStorage.removeItem('googleAwaitingClipboardPaste');
+            } catch (e) { }
+        }
+
+        async function autoPasteCopiedGoogleText() {
+            if (!googleAwaitingClipboardPaste) return false;
+            if (!navigator.clipboard || !navigator.clipboard.readText) return false;
+
+            try {
+                const texto = await navigator.clipboard.readText();
+                if (!texto || !texto.trim()) return false;
+
+                aplicarColagemGoogle(texto, '');
+                limparPendenciaGoogle();
+
+                if (googleClipboardRetryTimer) {
+                    clearInterval(googleClipboardRetryTimer);
+                    googleClipboardRetryTimer = null;
+                }
+                googleClipboardRetryCount = 0;
+                return true;
+            } catch (err) {
+                console.warn('Leitura automática do clipboard bloqueada pelo navegador:', err);
+                return false;
+            }
+        }
+
+        function iniciarVigilanciaClipboardGoogle() {
+            if (!googleAwaitingClipboardPaste) return;
+
+            googleClipboardRetryCount = 0;
+            if (googleClipboardRetryTimer) {
+                clearInterval(googleClipboardRetryTimer);
+            }
+
+            autoPasteCopiedGoogleText();
+
+            googleClipboardRetryTimer = setInterval(async () => {
+                if (!googleAwaitingClipboardPaste) {
+                    clearInterval(googleClipboardRetryTimer);
+                    googleClipboardRetryTimer = null;
+                    return;
+                }
+
+                googleClipboardRetryCount++;
+                const colou = await autoPasteCopiedGoogleText();
+
+                if (colou || googleClipboardRetryCount >= 20) {
+                    clearInterval(googleClipboardRetryTimer);
+                    googleClipboardRetryTimer = null;
+                }
+            }, 500);
         }
 
         function searchGoogleCore() {
             const q = document.getElementById('searchInput').value.trim();
-            if (!q) { alert('Digite um termo para pesquisar.'); return; }
+            if (!q) {
+                alert('Digite um termo para pesquisar.');
+                return;
+            }
 
             const rotuloInput = document.getElementById('rotuloLinkInput');
-            // Em uma nova leitura, o termo pesquisado vira o título padrão.
             if (!leituraIdAtual && rotuloInput) {
                 const atual = rotuloInput.value.trim();
                 if (!atual || atual === 'Leitura Guiada') rotuloInput.value = q;
             }
 
-            googleSearchUrlAtual = `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+            googleSearchUrlAtual =
+                `https://www.google.com/search?q=${encodeURIComponent(q)}`;
 
-            // Abre a pesquisa em outra aba. Não usa iframe, overlay nem captura automática.
-            const opened = window.open(googleSearchUrlAtual, '_blank', 'noopener,noreferrer');
-            if (!opened) {
-                // Alguns navegadores bloqueiam pop-up quando a ação não é considerada direta.
-                // Nesse caso, oferece uma navegação explícita sem criar um modal.
-                const hint = document.getElementById('googleInlineHint');
-                if (hint) {
-                    hint.style.display = 'flex';
-                    hint.innerHTML = '<strong>🌐 A pesquisa não pôde abrir em nova aba.</strong><span>Permita pop-ups para o Alumno ou <a href="' + googleSearchUrlAtual + '" target="_blank" rel="noopener noreferrer">abra a pesquisa no Google aqui</a>.</span>';
+            // Abre o Google em outra aba para manter a Leitura Guiada aberta.
+            // A chamada ocorre diretamente no clique/Enter do usuário, reduzindo
+            // o risco de bloqueio do navegador por pop-up.
+            googleAwaitingClipboardPaste = true;
+            googleClipboardRetryCount = 0;
+            try {
+                sessionStorage.setItem('googleAwaitingClipboardPaste', '1');
+            } catch (e) { }
+
+            const googleTab = window.open(googleSearchUrlAtual, '_blank');
+            if (!googleTab) {
+                // Se o navegador bloquear a nova aba, avisa e oferece a pesquisa
+                // na aba atual como alternativa explícita.
+                const abrirMesmoAba = confirm(
+                    'O navegador bloqueou a nova aba do Google. Deseja abrir a pesquisa nesta mesma aba?'
+                );
+                if (abrirMesmoAba) {
+                    window.location.href = googleSearchUrlAtual;
+                } else {
+                    limparPendenciaGoogle();
                 }
                 return;
             }
 
             const hint = document.getElementById('googleInlineHint');
-            if (hint) {
-                hint.style.display = 'flex';
-                hint.innerHTML = '<strong>📋 Pesquisa aberta em uma nova aba.</strong><span>Selecione com o mouse o trecho que deseja estudar, copie com <strong>Ctrl+C</strong>, volte para a Leitura Guiada e cole o texto na caixa de entrada.</span>';
-            }
+            if (hint) hint.style.display = 'flex';
+            setTimeout(iniciarVigilanciaClipboardGoogle, 700);
         }
 
-        // Compatibilidade com referências antigas: não captura mais a área de transferência.
+        // Compatibilidade com versões antigas que chamavam esta função.
+        // Se houver um retorno explícito para esta função, ela tenta a captura.
         function captureCopiedGoogleText() {
-            console.info('ALUMNO: captura automática do Google foi removida. Use Ctrl+C e depois Ctrl+V na Leitura Guiada.');
+            return autoPasteCopiedGoogleText();
         }
 
         function closeGoogleSearch() {
-            // A pesquisa do Google agora abre em uma aba separada; não existe mais modal para fechar.
+            // Mantida por compatibilidade com versões anteriores.
         }
 
         function openGoogleExternal() {
-            if (googleSearchUrlAtual) {
-                window.open(googleSearchUrlAtual, '_blank', 'noopener,noreferrer');
-                const hint = document.getElementById('googleInlineHint');
-                if (hint) hint.style.display = 'flex';
-            }
+            if (!googleSearchUrlAtual) return;
+            googleAwaitingClipboardPaste = true;
+            try {
+                sessionStorage.setItem('googleAwaitingClipboardPaste', '1');
+            } catch (e) { }
+            window.open(googleSearchUrlAtual, '_blank', 'noopener,noreferrer');
         }
+
+        // O retorno pelo botão Voltar pode disparar pageshow/focus/visibilitychange.
+        // Não iniciamos nenhuma captura se não houver uma pesquisa pendente.
+        window.addEventListener('focus', iniciarVigilanciaClipboardGoogle);
+        window.addEventListener('pageshow', () => {
+            try {
+                if (sessionStorage.getItem('googleAwaitingClipboardPaste') === '1') {
+                    googleAwaitingClipboardPaste = true;
+                }
+            } catch (e) { }
+
+            if (googleAwaitingClipboardPaste) {
+                setTimeout(iniciarVigilanciaClipboardGoogle, 80);
+                setTimeout(iniciarVigilanciaClipboardGoogle, 500);
+            }
+        });
+        window.addEventListener('resume', iniciarVigilanciaClipboardGoogle);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                iniciarVigilanciaClipboardGoogle();
+            }
+        });
 
         function escapeHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, char => ({
@@ -1909,6 +3100,10 @@
                 output.textContent = "Nenhuma frase gerada.";
                 if (position) position.textContent = "Pronto para leitura";
                 if (hint) hint.textContent = "Cole o texto e clique em Resumir.";
+                const prev = document.getElementById('prevBtn');
+                const next = document.getElementById('nextBtn');
+                if (prev) prev.disabled = true;
+                if (next) next.disabled = true;
                 return;
             }
             if (currentIndex < 0) currentIndex = 0;
@@ -1917,40 +3112,156 @@
             output.style.color = document.getElementById('fontColor')?.value || '';
             output.style.fontFamily = document.getElementById('fontFamily')?.value || '';
             output.textContent = garantirEspacos(sentences[currentIndex]);
-            if (position) position.textContent = `Frase ${currentIndex + 1} de ${sentences.length}`;
-            if (hint) hint.textContent = autoMode ? "Leitura automática ativa" : "Use os controles para navegar";
+            if (position) position.textContent = `Parágrafo ${currentIndex + 1} de ${sentences.length}`;
+            if (hint) hint.textContent = autoMode ? "Leitura automática ativa" : "Use as setas para navegar";
+            const prev = document.getElementById('prevBtn');
+            const next = document.getElementById('nextBtn');
+            if (prev) prev.disabled = false;
+            if (next) next.disabled = false;
         }
+
+        function atualizarBotaoPlay(estado) {
+            const playBtn = document.getElementById('playPauseBtn');
+            if (!playBtn) return;
+
+            if (estado === 'pause') {
+                playBtn.textContent = 'Ⅱ';
+                playBtn.setAttribute('aria-label', 'Pausar leitura');
+                playBtn.title = 'Pausar leitura';
+            } else {
+                playBtn.textContent = '▶';
+                playBtn.setAttribute('aria-label', 'Iniciar leitura');
+                playBtn.title = 'Iniciar leitura';
+            }
+        }
+
+        // Quando acionada pelo botão Play, a leitura percorre todo o texto.
+        // Cada parágrafo é uma fala separada para manter a estabilidade da
+        // SpeechSynthesis, mas a próxima fala começa automaticamente assim que
+        // a anterior termina. O usuário só interrompe pelo Pause.
+        let leituraContinua = false;
 
         function speakCurrent() {
             const text = sentences[currentIndex];
-            if (!voiceEnabled || !text || !text.trim()) { if (autoMode) nextSentenceAuto(); return; }
+            if (!voiceEnabled || !text || !text.trim()) {
+                if (leituraContinua) {
+                    if (currentIndex < sentences.length - 1) {
+                        currentIndex++;
+                        showCurrent();
+                        speakCurrent();
+                    } else {
+                        leituraContinua = false;
+                        atualizarBotaoPlay('play');
+                    }
+                } else {
+                    atualizarBotaoPlay('play');
+                    if (autoMode) nextSentenceAuto();
+                }
+                return;
+            }
+
+            // Só cancela uma fala anterior quando estamos iniciando uma nova
+            // leitura manual. Durante a leitura contínua, a fala anterior já
+            // terminou e a próxima deve entrar naturalmente na fila.
             speechSynthesis.cancel();
             const utter = new SpeechSynthesisUtterance(garantirEspacos(text));
             if (selectedVoice) utter.voice = selectedVoice;
+            utter.lang = selectedVoice?.lang || 'pt-BR';
             utter.rate = parseFloat(document.getElementById('voiceRate')?.value) || 1;
 
-            utter.onend = () => { if (autoMode) setTimeout(nextSentenceAuto, 250); else document.getElementById('playPauseBtn').textContent = '▶️'; };
+            utter.onstart = () => atualizarBotaoPlay('pause');
+            utter.onpause = () => atualizarBotaoPlay('play');
+            utter.onresume = () => atualizarBotaoPlay('pause');
+            utter.onend = () => {
+                if (leituraContinua) {
+                    if (currentIndex < sentences.length - 1) {
+                        currentIndex++;
+                        showCurrent();
+                        // Pequena passagem assíncrona evita que alguns motores
+                        // do Edge/Chromium percam a próxima fala.
+                        setTimeout(speakCurrent, 20);
+                    } else {
+                        leituraContinua = false;
+                        atualizarBotaoPlay('play');
+                    }
+                    return;
+                }
+
+                atualizarBotaoPlay('play');
+                if (autoMode) setTimeout(nextSentenceAuto, 250);
+            };
+            utter.onerror = () => {
+                // Se o usuário cancelou pelo Pause/navegação, não reinicia.
+                if (leituraContinua && speechSynthesis.speaking === false && speechSynthesis.paused === false) {
+                    leituraContinua = false;
+                }
+                atualizarBotaoPlay('play');
+            };
+
             speechSynthesis.speak(utter);
         }
 
+        function mostrarAvisoVozNatural() {
+            let aviso = document.getElementById('naturalVoiceNotice');
+            if (!aviso) {
+                aviso = document.createElement('div');
+                aviso.id = 'naturalVoiceNotice';
+                aviso.setAttribute('role', 'status');
+                aviso.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:20000;max-width:min(560px,92vw);padding:11px 16px;border-radius:9px;background:#111827;color:#fff;font:500 13px/1.45 Inter,system-ui,sans-serif;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.22);opacity:0;transition:opacity .18s ease;pointer-events:none;';
+                document.body.appendChild(aviso);
+            }
+
+            if (ehEdge()) {
+                aviso.textContent = 'Voz natural preferencial: Antônio ou Francisca. As vozes naturais funcionam no navegador Edge.';
+            } else {
+                aviso.textContent = 'As vozes naturais Antônio e Francisca estão disponíveis no navegador Edge. Neste navegador, serão usadas outras vozes pt-BR disponíveis, incluindo as do Google quando oferecidas.';
+            }
+
+            aviso.style.opacity = '1';
+            clearTimeout(window.__naturalVoiceNoticeTimer);
+            window.__naturalVoiceNoticeTimer = setTimeout(() => { aviso.style.opacity = '0'; }, 5500);
+        }
+
         function playPauseToggle() {
-            if (!sentences.length) { alert("Resuma o texto primeiro!"); return; }
-            if (speechSynthesis.speaking && !speechSynthesis.paused) { speechSynthesis.pause(); document.getElementById('playPauseBtn').textContent = '▶️'; }
-            else if (speechSynthesis.paused) { speechSynthesis.resume(); document.getElementById('playPauseBtn').textContent = '⏸️'; }
-            else { if (currentIndex < 0 || currentIndex >= sentences.length) currentIndex = 0; showCurrent(); speakCurrent(); }
+            if (!sentences.length) {
+                alert("Inicie a leitura primeiro!");
+                return;
+            }
+            if (speechSynthesis.speaking && !speechSynthesis.paused) {
+                // Pause não encerra a leitura contínua. Ao clicar novamente,
+                // ela continua exatamente do ponto em que foi interrompida.
+                speechSynthesis.pause();
+                atualizarBotaoPlay('play');
+            } else if (speechSynthesis.paused) {
+                speechSynthesis.resume();
+                atualizarBotaoPlay('pause');
+            } else {
+                mostrarAvisoVozNatural();
+                leituraContinua = true;
+                if (currentIndex < 0 || currentIndex >= sentences.length) currentIndex = 0;
+                showCurrent();
+                speakCurrent();
+            }
         }
 
         function stopReading() {
             autoMode = false;
-            document.getElementById('autoModeSwitch').checked = false;
-            speechSynthesis.cancel();
-            document.getElementById('playPauseBtn').textContent = '▶️';
+            leituraContinua = false;
+            const autoSwitch = document.getElementById('autoModeSwitch');
+            if (autoSwitch) autoSwitch.checked = false;
+            if ('speechSynthesis' in window) speechSynthesis.cancel();
+            atualizarBotaoPlay('play');
         }
 
         function toggleAutoMode() {
             autoMode = document.getElementById('autoModeSwitch').checked;
-            if (autoMode && !speechSynthesis.speaking) { showCurrent(); speakCurrent(); }
-            else speechSynthesis.cancel();
+            if (autoMode && !speechSynthesis.speaking) {
+                showCurrent();
+                speakCurrent();
+            } else {
+                speechSynthesis.cancel();
+                atualizarBotaoPlay('play');
+            }
         }
 
         function nextSentenceAuto() {
@@ -1960,8 +3271,76 @@
             speakCurrent();
         }
 
-        function nextSentence() { if (!sentences.length) return; stopReading(); currentIndex = (currentIndex + 1) % sentences.length; showCurrent(); if (voiceEnabled) speakCurrent(); }
-        function prevSentence() { if (!sentences.length) return; stopReading(); currentIndex = (currentIndex - 1 + sentences.length) % sentences.length; showCurrent(); if (voiceEnabled) speakCurrent(); }
+        function enterReaderReadingMode() {
+            const reader = document.querySelector('.reader-column');
+            if (!reader) return;
+            reader.classList.add('reader-reading-mode');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function exitReaderReadingMode() {
+            const reader = document.querySelector('.reader-column');
+            if (reader) reader.classList.remove('reader-reading-mode');
+            document.body.style.overflow = '';
+            atualizarBotaoPlay(speechSynthesis.speaking && !speechSynthesis.paused ? 'pause' : 'play');
+        }
+
+        function nextSentence() {
+            if (!sentences.length) return;
+            stopReading();
+            currentIndex = (currentIndex + 1) % sentences.length;
+            showCurrent();
+            enterReaderReadingMode();
+        }
+
+        function prevSentence() {
+            if (!sentences.length) return;
+            stopReading();
+            currentIndex = (currentIndex - 1 + sentences.length) % sentences.length;
+            showCurrent();
+            enterReaderReadingMode();
+        }
+
+        // No celular, um toque simples em qualquer ponto das laterais da tela
+        // também avança/retorna a página. O centro permanece livre para leitura.
+        let readerTouchStartX = null;
+        let readerTouchStartY = null;
+
+        function handleReaderLateralPointerDown(event) {
+            if (!document.querySelector('.reader-column.reader-reading-mode')) return;
+            readerTouchStartX = event.clientX;
+            readerTouchStartY = event.clientY;
+        }
+
+        function handleReaderLateralPointerUp(event) {
+            if (!document.querySelector('.reader-column.reader-reading-mode')) return;
+            if (readerTouchStartX === null || readerTouchStartY === null) return;
+
+            const dx = Math.abs(event.clientX - readerTouchStartX);
+            const dy = Math.abs(event.clientY - readerTouchStartY);
+            const x = event.clientX;
+            const width = window.innerWidth;
+            const lateralWidth = Math.max(70, Math.min(150, width * 0.20));
+
+            // Ignora arrastes e cliques nos próprios controles.
+            const target = event.target;
+            const isControl = target && (target.closest('button, input, textarea, select, a') || target === document.body);
+            const isSimpleTap = dx <= 12 && dy <= 12;
+
+            if (isSimpleTap && !isControl) {
+                if (x <= lateralWidth) {
+                    prevSentence();
+                } else if (x >= width - lateralWidth) {
+                    nextSentence();
+                }
+            }
+
+            readerTouchStartX = null;
+            readerTouchStartY = null;
+        }
+
+        document.addEventListener('pointerdown', handleReaderLateralPointerDown, { passive: true });
+        document.addEventListener('pointerup', handleReaderLateralPointerUp, { passive: true });
         function toggleVoice() { voiceEnabled = !voiceEnabled; document.getElementById('voiceToggleBtn').textContent = voiceEnabled ? '🗣️' : '🔇'; if (!voiceEnabled) speechSynthesis.cancel(); }
 
 
@@ -1969,7 +3348,7 @@
         // SALVAMENTO AUTOMATIZADO VIA PONTE (FIRESTORE)
         // ===============================================
 
-        function handleSaveAction(){
+        function handleSaveAction() {
             if (isFunctionGuideDisabled('save')) { salvarVinculoFirebase(); return; }
             openFunctionGuide('save', 'action');
         }
@@ -1984,8 +3363,7 @@
                 // Permite salvar também quando o texto foi editado mas ainda não sincronizado.
                 const textoAtual = (sentences.join('\n\n') || rawTextArea.value).trim();
                 if (textoAtual) {
-                    sentences = textoAtual.split(/\n\s*\n/).flatMap(p => sent_tokenize_browser(p))
-                        .map(s => garantirEspacos(s)).filter(Boolean);
+                    sentences = buildReadingPagesFromEditedText(textoAtual);
                 }
             }
 
@@ -2003,7 +3381,7 @@
                 let leituraId = leituraIdAtual;
                 const leituraData = {
                     rawText: rawTextArea.value,
-                    processedText: sentences.join('\n\n'),
+                    processedText: sentences.join('\n'),
                     sentences: sentences,
                     atualizadoEm: agora
                 };
@@ -2104,12 +3482,24 @@
                     lastEditorBaseText = '';
                     clearAppliedEditorVersion();
                     rawTextManuallyEditedSinceEditor = false;
-                    if (data && data.sentences) {
-                        sentences = data.sentences.map(s => garantirEspacos(s));
+                    if (data && data.rawText) {
+                        // O texto bruto salvo é a fonte principal, pois contém
+                        // exatamente as quebras de página definidas na edição.
+                        rawTextArea.value = String(data.rawText)
+                            .replace(/\r\n/g, '\n')
+                            .replace(/\r/g, '\n');
+
+                        sentences = buildReadingPagesFromEditedText(rawTextArea.value);
                         lastEditorAppliedCells = [...sentences];
-                        lastEditorAppliedText = sentences.join('\n\n');
+                        lastEditorAppliedText = sentences.join('\n');
                         currentIndex = 0;
-                        if (data.rawText) rawTextArea.value = garantirEspacos(data.rawText);
+                        showCurrent();
+                        updateCounters();
+                    } else if (data && data.sentences) {
+                        sentences = data.sentences.map(s => garantirEspacos(s)).filter(Boolean);
+                        lastEditorAppliedCells = [...sentences];
+                        lastEditorAppliedText = sentences.join('\n');
+                        currentIndex = 0;
                         showCurrent();
                         updateCounters();
                     }
@@ -2228,14 +3618,14 @@
         }
 
         function ehAbreviacaoNaoFinal(palavra) {
-            const p = String(palavra || '').toLowerCase().replace(/[.]$/,'');
+            const p = String(palavra || '').toLowerCase().replace(/[.]$/, '');
             // Abreviações que frequentemente terminam com ponto, mas não
             // representam fim de período. Inclui explicitamente "Art.".
             const comuns = new Set([
-                'art','arts','inc','ltd','etc','ex','obs','p','pp','pag','pág',
-                'n','nº','no','núm','dr','dra','sr','sra','prof','profa',
-                'av','avda','rod','gov','dep','cel','gen','cap','min','pres',
-                'tel','ref','aprox','vol','ed','ed.','fig','cf','id','item'
+                'art', 'arts', 'inc', 'ltd', 'etc', 'ex', 'obs', 'p', 'pp', 'pag', 'pág',
+                'n', 'nº', 'no', 'núm', 'dr', 'dra', 'sr', 'sra', 'prof', 'profa',
+                'av', 'avda', 'rod', 'gov', 'dep', 'cel', 'gen', 'cap', 'min', 'pres',
+                'tel', 'ref', 'aprox', 'vol', 'ed', 'ed.', 'fig', 'cf', 'id', 'item'
             ]);
             return comuns.has(p);
         }
@@ -2344,18 +3734,18 @@
             // a regra após ':' pode criar apenas uma quebra de linha, nunca
             // uma nova célula.
             const nomes = new Set([
-                'joao','maria','jose','ana','carlos','paulo','pedro','lucas','gabriel',
-                'fernando','marcos','rafael','bruno','ricardo','roberto','eduardo',
-                'antonio','antonio','francisco','luiz','luis','andre','andrea','beatriz',
-                'camila','carolina','daniela','juliana','patricia','renata','sofia',
-                'helena','larissa','isabela','isabel','gabriela','mariana','leticia',
-                'brasil','brasilia','portugal','franca','inglaterra','espanha','italia',
-                'argentina','chile','uruguai','america','europa','asia','africa',
-                'amazonas','bahia','ceara','goias','minas','pernambuco','parana','paraiba',
-                'sao','paulo','rio','janeiro','recife','salvador','natal','fortaleza',
-                'google','microsoft','apple','amazon','meta','openai','chatgpt',
-                'nasa','ibm','tesla','unesco','onu','inss','stf','stj','tcu','tse',
-                'constituição','constituicao','codigo','código','lei','decreto'
+                'joao', 'maria', 'jose', 'ana', 'carlos', 'paulo', 'pedro', 'lucas', 'gabriel',
+                'fernando', 'marcos', 'rafael', 'bruno', 'ricardo', 'roberto', 'eduardo',
+                'antonio', 'antonio', 'francisco', 'luiz', 'luis', 'andre', 'andrea', 'beatriz',
+                'camila', 'carolina', 'daniela', 'juliana', 'patricia', 'renata', 'sofia',
+                'helena', 'larissa', 'isabela', 'isabel', 'gabriela', 'mariana', 'leticia',
+                'brasil', 'brasilia', 'portugal', 'franca', 'inglaterra', 'espanha', 'italia',
+                'argentina', 'chile', 'uruguai', 'america', 'europa', 'asia', 'africa',
+                'amazonas', 'bahia', 'ceara', 'goias', 'minas', 'pernambuco', 'parana', 'paraiba',
+                'sao', 'paulo', 'rio', 'janeiro', 'recife', 'salvador', 'natal', 'fortaleza',
+                'google', 'microsoft', 'apple', 'amazon', 'meta', 'openai', 'chatgpt',
+                'nasa', 'ibm', 'tesla', 'unesco', 'onu', 'inss', 'stf', 'stj', 'tcu', 'tse',
+                'constituição', 'constituicao', 'codigo', 'código', 'lei', 'decreto'
             ]);
 
             return nomes.has(base);
@@ -2407,7 +3797,7 @@
         }
 
 
-        function handleManualEditorAction(){
+        function handleManualEditorAction() {
             if (isFunctionGuideDisabled('trim')) { openManualEditor(); return; }
             openFunctionGuide('trim', 'action');
         }
